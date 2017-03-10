@@ -1,0 +1,18 @@
+{
+  "name": "md-blogsys",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "js-koa-pug": "^1.0.3",
+    "koa": "^2.1.0",
+    "koa-router": "^5.4.0",
+    "mysql2": "^1.2.0"
+  }
+}
