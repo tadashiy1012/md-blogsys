@@ -1,13 +1,15 @@
 const Koa = require('koa');
-const pug = require('js-koa-pug');
 const Router = require('koa-router');
+const pug = require('js-koa-pug');
+const index = require('./routes/index.js');
+const user = require('./routes/user.js');
+
 const app = new Koa();
 const router = new Router();
 const port = 3000;
 
-router.get('/', async (ctx, next) => {
-  ctx.render('index');
-});
+router.use('/', index.routes());
+router.use('/user', user.routes());
 
 app.use(pug('views'));
 app.use(router.routes());
