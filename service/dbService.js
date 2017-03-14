@@ -1,24 +1,30 @@
-class DBService {
-
-  constructor() {
-    this.conn = require('mysql2').createConnection({
-      host: 'localhost',
-      user: 'root',
-      password: 'admin',
-      port: 3306,
-      database: 'mdblog'
-    });
-    this.conn.connect();
-  }
-
-  execQuery(query) {
-    return new Promise((resolve, reject) => {
-      conn.query(query, (err, result) => {
-        if (err) { reject(err); }
-        else { resolve(result); }
+const DBService = (() => {
+  let instance = null;
+  return class DBService {
+    constructor() {
+      this.conn = require('mysql2').createConnection({
+        host: 'localhost',
+        user: 'root',
+        password: 'admin',
+        port: 3306,
+        database: 'mdblog'
       });
-    });
+      this.conn.connect();
+    }
+    static getInstance() {
+      if (instance === null) {
+        instance = new DBService();
+      }
+      return instance;
+    }
+    execQuery(query) {
+      return new Promise((resolve, reject) => {
+        conn.query(query, (err, result) => {
+          if (err) { reject(err); }
+          else { resolve(result); }
+        });
+      });
+    }
   }
-
-}
+})();
 module.exports = DBService;
