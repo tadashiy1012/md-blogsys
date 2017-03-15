@@ -15,9 +15,15 @@ class LoggedListProcessor {
 }
 class UserAuthenticator {
   constructor() {
-    this.ls = [
-      {name: "yama", pass: "hogehoge"}
-    ];
+    // this.ls = [
+    //   {name: "yama", pass: "hogehoge"}
+    // ];
+    this.ls = [];
+    (async () => {
+      const dbService = require('./dbService').getInstance();
+      const q = 'select * from user;';
+      this.ls = await dbService.execQuery(q);
+    })();
   }
   check(user) {
     let valid = false;

@@ -5,7 +5,7 @@ const DBService = (() => {
       this.conn = require('mysql2').createConnection({
         host: 'localhost',
         user: 'root',
-        password: 'admin',
+        password: '',
         port: 3306,
         database: 'mdblog'
       });
@@ -19,7 +19,7 @@ const DBService = (() => {
     }
     execQuery(query) {
       return new Promise((resolve, reject) => {
-        conn.query(query, (err, result) => {
+        this.conn.query(query, (err, result) => {
           if (err) { reject(err); }
           else { resolve(result); }
         });
