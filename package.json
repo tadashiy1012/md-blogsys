@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js"
+    "start": "node app.js",
+    "build-cl": "browserify client/index.js -t [babelify --sourceMap] -d | exorcist public/js/bundle.js.map > public/js/bundle.js"
   },
   "keywords": [],
   "author": "",
@@ -18,6 +19,20 @@
     "koa-router": "^7.0.1",
     "koa-session": "^5.0.0",
     "koa-static": "^3.0.0",
-    "mysql2": "^1.2.0"
+    "mysql2": "^1.2.0",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2"
+  },
+  "devDependencies": {
+    "babel-preset-latest": "^6.24.0",
+    "babel-preset-react": "^6.23.0",
+    "babelify": "^7.3.0",
+    "browserify": "^14.1.0",
+    "exorcist": "^0.4.0"
+  },
+  "babel": {
+    "presets": [
+      "react", "latest"
+    ]
   }
 }
