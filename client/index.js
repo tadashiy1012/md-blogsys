@@ -22,18 +22,26 @@ const store = createStore(
   applyMiddleware(...middlewares)
 );
 
+let init = false;
+
 const EntriesContainer = ({onRead, ls}) => {
-  onRead();
+  if (!init) {
+    init = true;
+    onRead();
+  }
+  let node = ls.map((item, idx) => {
+    return (<li key={idx}>{item}</li>);
+  });
   return (
     <ul>
-      {ls}
+      {node}
     </ul>
   );
 };
 
 const Entries = connect((state) => {
   console.log(state);
-  return { ls: state.entries };
+  return { ls: state.reducer.entries };
 }, (dispatch) => {
   return {
     onRead: () => {

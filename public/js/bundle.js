@@ -85,21 +85,33 @@ var store = (0, _redux.createStore)((0, _redux.combineReducers)({
   router: _reactRouterRedux.routerReducer
 }), _redux.applyMiddleware.apply(undefined, middlewares));
 
+var init = false;
+
 var EntriesContainer = function EntriesContainer(_ref) {
   var onRead = _ref.onRead,
       ls = _ref.ls;
 
-  onRead();
+  if (!init) {
+    init = true;
+    onRead();
+  }
+  var node = ls.map(function (item, idx) {
+    return _react2.default.createElement(
+      'li',
+      { key: idx },
+      item
+    );
+  });
   return _react2.default.createElement(
     'ul',
     null,
-    ls
+    node
   );
 };
 
 var Entries = (0, _reactRedux.connect)(function (state) {
   console.log(state);
-  return { ls: state.entries };
+  return { ls: state.reducer.entries };
 }, function (dispatch) {
   return {
     onRead: function onRead() {
