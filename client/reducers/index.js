@@ -1,12 +1,16 @@
 import { handleAction, handleActions } from 'redux-actions';
-import {hoge} from '../actions';
+import { fetchEntries } from '../actions';
 
 const reducer = handleActions({
-  [hoge]: (state, action) => Object.assign({}, state, {
-    hoge: action.payload
-  })
+  [fetchEntries]: (state, action) => {
+    console.log(state);
+    console.log(action);
+    return Object.assign({}, state, {
+      entries: action.payload
+    });
+  }
 }, {
-  hoge: 'hoge'
+  entries: []
 });
 
 export default reducer;
