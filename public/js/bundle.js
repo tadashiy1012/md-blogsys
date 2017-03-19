@@ -211,13 +211,21 @@ var App1 = function App1(_ref) {
 
   return _react2.default.createElement(
     'div',
-    null,
+    { className: 'contents' },
     _react2.default.createElement(
-      'h1',
-      null,
-      'app1'
+      'section',
+      { className: 'left' },
+      _react2.default.createElement(
+        'h2',
+        null,
+        'nav'
+      )
     ),
-    _react2.default.createElement(_components.Entries, null)
+    _react2.default.createElement(
+      'section',
+      { className: 'right' },
+      _react2.default.createElement(_components.Entries, null)
+    )
   );
 };
 

@@ -23,9 +23,13 @@ const store = createStore(
 
 const App1 = ({}) => {
   return (
-    <div>
-      <h1>app1</h1>
-      <Entries />
+    <div className='contents'>
+      <section className='left'>
+        <h2>nav</h2>
+      </section>
+      <section className='right'>
+        <Entries />
+      </section>
     </div>
   );
 };
