@@ -3,8 +3,6 @@ import { fetchEntries } from '../actions';
 
 const reducer = handleActions({
   [fetchEntries]: (state, action) => {
-    console.log(state);
-    console.log(action);
     return Object.assign({}, state, {
       entries: action.payload
     });

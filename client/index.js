@@ -8,11 +8,10 @@ import { Route } from 'react-router';
 import { ConnectedRouter, routerReducer, routerMiddleware, push } from 'react-router-redux';
 import promiseMiddleware from 'redux-promise';
 import reducer from './reducers';
-import { fetchEntries } from './actions';
+import { Entries } from './components';
 
 const history = createHistory();
-const middleware = routerMiddleware(history);
-const middlewares = [middleware, promiseMiddleware];
+const middlewares = [routerMiddleware(history), promiseMiddleware];
 
 const store = createStore(
   combineReducers({
@@ -21,34 +20,6 @@ const store = createStore(
   }),
   applyMiddleware(...middlewares)
 );
-
-let init = false;
-
-const EntriesContainer = ({onRead, ls}) => {
-  if (!init) {
-    init = true;
-    onRead();
-  }
-  let node = ls.map((item, idx) => {
-    return (<li key={idx}>{item}</li>);
-  });
-  return (
-    <ul>
-      {node}
-    </ul>
-  );
-};
-
-const Entries = connect((state) => {
-  console.log(state);
-  return { ls: state.reducer.entries };
-}, (dispatch) => {
-  return {
-    onRead: () => {
-      dispatch(fetchEntries());
-    }
-  };
-})(EntriesContainer);
 
 const App1 = ({}) => {
   return (
