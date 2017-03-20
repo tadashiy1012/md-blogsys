@@ -6,7 +6,7 @@ const Entries = (() => {
   const DateItem = ({dt}) => {
     const date = new Date(dt);
     return (
-      <span>
+      <span style={{'fontSize': 12}}>
         {date.getFullYear()}
         <span>-</span>
         {date.getMonth() + 1}
@@ -21,8 +21,8 @@ const Entries = (() => {
   };
   const Item = ({item}) => {
     return (
-      <li>
-        <div><span>{item.title}</span></div>
+      <li style={{'listStyleType': 'none', 'marginBottom': 20}}>
+        <div><h3>{item.title}</h3></div>
         <div><p>{item.body}</p></div>
         <div><DateItem dt={item.date} /></div>
       </li>
@@ -38,7 +38,7 @@ const Entries = (() => {
       return (<Item key={idx} item={item} />);
     });
     return (
-      <ul>
+      <ul style={{'paddingLeft': 0}}>
         {node}
       </ul>
     );

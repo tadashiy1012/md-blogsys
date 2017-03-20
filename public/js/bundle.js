@@ -75,7 +75,7 @@ var Entries = function () {
     var date = new Date(dt);
     return _react2.default.createElement(
       'span',
-      null,
+      { style: { 'fontSize': 12 } },
       date.getFullYear(),
       _react2.default.createElement(
         'span',
@@ -108,12 +108,12 @@ var Entries = function () {
 
     return _react2.default.createElement(
       'li',
-      null,
+      { style: { 'listStyleType': 'none', 'marginBottom': 20 } },
       _react2.default.createElement(
         'div',
         null,
         _react2.default.createElement(
-          'span',
+          'h3',
           null,
           item.title
         )
@@ -148,7 +148,7 @@ var Entries = function () {
     });
     return _react2.default.createElement(
       'ul',
-      null,
+      { style: { 'paddingLeft': 0 } },
       node
     );
   };
