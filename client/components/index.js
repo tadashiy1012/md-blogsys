@@ -1,3 +1,4 @@
 import Entries from './Entries';
+import LatestList from './LatestList';
 
-export { Entries };
+export { Entries, LatestList };
