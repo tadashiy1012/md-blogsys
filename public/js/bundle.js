@@ -69,53 +69,75 @@ var _actions = require('../actions');
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Entries = function () {
-  var Item = function Item(_ref) {
-    var item = _ref.item;
+  var DateItem = function DateItem(_ref) {
+    var dt = _ref.dt;
+
+    var date = new Date(dt);
+    return _react2.default.createElement(
+      'span',
+      null,
+      date.getFullYear(),
+      _react2.default.createElement(
+        'span',
+        null,
+        '-'
+      ),
+      date.getMonth() + 1,
+      _react2.default.createElement(
+        'span',
+        null,
+        '-'
+      ),
+      date.getDate(),
+      _react2.default.createElement(
+        'span',
+        null,
+        ' '
+      ),
+      date.getHours(),
+      _react2.default.createElement(
+        'span',
+        null,
+        ':'
+      ),
+      date.getMinutes()
+    );
+  };
+  var Item = function Item(_ref2) {
+    var item = _ref2.item;
 
     return _react2.default.createElement(
       'li',
       null,
       _react2.default.createElement(
-        'span',
+        'div',
         null,
-        item.id
+        _react2.default.createElement(
+          'span',
+          null,
+          item.title
+        )
       ),
       _react2.default.createElement(
-        'span',
+        'div',
         null,
-        ':'
+        _react2.default.createElement(
+          'p',
+          null,
+          item.body
+        )
       ),
       _react2.default.createElement(
-        'span',
+        'div',
         null,
-        item.title
-      ),
-      _react2.default.createElement(
-        'span',
-        null,
-        ':'
-      ),
-      _react2.default.createElement(
-        'span',
-        null,
-        item.body
-      ),
-      _react2.default.createElement(
-        'span',
-        null,
-        ':'
-      ),
-      _react2.default.createElement(
-        'span',
-        null,
-        item.date
+        _react2.default.createElement(DateItem, { dt: item.date })
       )
     );
   };
   var init = false;
-  var EntriesContainer = function EntriesContainer(_ref2) {
-    var onRead = _ref2.onRead,
-        ls = _ref2.ls;
+  var EntriesContainer = function EntriesContainer(_ref3) {
+    var onRead = _ref3.onRead,
+        ls = _ref3.ls;
 
     if (!init) {
       init = true;

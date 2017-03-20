@@ -3,13 +3,28 @@ import { connect } from 'react-redux';
 import { fetchEntries } from '../actions';
 
 const Entries = (() => {
+  const DateItem = ({dt}) => {
+    const date = new Date(dt);
+    return (
+      <span>
+        {date.getFullYear()}
+        <span>-</span>
+        {date.getMonth() + 1}
+        <span>-</span>
+        {date.getDate()}
+        <span> </span>
+        {date.getHours()}
+        <span>:</span>
+        {date.getMinutes()}
+      </span>
+    );
+  };
   const Item = ({item}) => {
     return (
       <li>
-        <span>{item.id}</span><span>:</span>
-        <span>{item.title}</span><span>:</span>
-        <span>{item.body}</span><span>:</span>
-        <span>{item.date}</span>
+        <div><span>{item.title}</span></div>
+        <div><p>{item.body}</p></div>
+        <div><DateItem dt={item.date} /></div>
       </li>
     );
   };
