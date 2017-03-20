@@ -4,7 +4,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.fetchEntries = undefined;
+exports.fetchEntry = exports.fetchEntries = undefined;
 
 var _reduxActions = require('redux-actions');
 
@@ -19,6 +19,20 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 var execFetch = function execFetch() {
   return new Promise(function (resolve, reject) {
     var url = '/entry';
+    _superagent2.default.get(url).end(function (err, res) {
+      if (err) {
+        reject(err);
+      } else {
+        var obj = JSON.parse(res.text);
+        resolve(obj);
+      }
+    });
+  });
+};
+
+var execFetchOne = function execFetchOne(tgtId) {
+  return new Promise(function (resolve, reject) {
+    var url = '/entry/' + tgtId;
     _superagent2.default.get(url).end(function (err, res) {
       if (err) {
         reject(err);
@@ -50,6 +64,33 @@ var fetchEntries = exports.fetchEntries = (0, _reduxActions.createAction)('FETCH
     }
   }, _callee, undefined);
 })));
+
+var fetchEntry = exports.fetchEntry = (0, _reduxActions.createAction)('FETCH_ENTRY', function () {
+  var _ref2 = _asyncToGenerator(regeneratorRuntime.mark(function _callee2(tgtId) {
+    var resulet;
+    return regeneratorRuntime.wrap(function _callee2$(_context2) {
+      while (1) {
+        switch (_context2.prev = _context2.next) {
+          case 0:
+            _context2.next = 2;
+            return execFetchOne(tgtId);
+
+          case 2:
+            resulet = _context2.sent;
+            return _context2.abrupt('return', result);
+
+          case 4:
+          case 'end':
+            return _context2.stop();
+        }
+      }
+    }, _callee2, undefined);
+  }));
+
+  return function (_x) {
+    return _ref2.apply(this, arguments);
+  };
+}());
 
 },{"redux-actions":617,"superagent":630}],2:[function(require,module,exports){
 'use strict';
@@ -178,39 +219,43 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRedux = require('react-redux');
 
+var _reactRouterRedux = require('react-router-redux');
+
 var _actions = require('../actions');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var LatestList = function () {
   var Item = function Item(_ref) {
-    var item = _ref.item;
+    var item = _ref.item,
+        click = _ref.click;
 
+    var url = '/entry/' + item.id;
     return _react2.default.createElement(
       'li',
       null,
       _react2.default.createElement(
         'a',
-        null,
-        _react2.default.createElement(
-          'span',
-          null,
-          item.title
-        )
+        { onClick: function onClick(e) {
+            e.preventDefault();
+            click(item.id);
+          } },
+        item.title
       )
     );
   };
   var init = false;
   var Container = function Container(_ref2) {
     var ls = _ref2.ls,
-        onRead = _ref2.onRead;
+        onRead = _ref2.onRead,
+        onLinkClick = _ref2.onLinkClick;
 
     if (!init) {
       onRead();
       init = true;
     }
     var node = ls.map(function (item, idx) {
-      return _react2.default.createElement(Item, { key: idx, item: item });
+      return _react2.default.createElement(Item, { key: idx, item: item, click: onLinkClick });
     });
     return _react2.default.createElement(
       'ul',
@@ -224,6 +269,10 @@ var LatestList = function () {
     return {
       onRead: function onRead() {
         dispatch((0, _actions.fetchEntries)());
+      },
+      onLinkClick: function onLinkClick(tgtId) {
+        console.log(tgtId);
+        dispatch((0, _reactRouterRedux.push)('/app2'));
       }
     };
   })(Container);
@@ -231,7 +280,7 @@ var LatestList = function () {
 
 exports.default = LatestList;
 
-},{"../actions":1,"react":608,"react-redux":563}],4:[function(require,module,exports){
+},{"../actions":1,"react":608,"react-redux":563,"react-router-redux":571}],4:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -352,18 +401,25 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _handleActions;
+
 var _reduxActions = require('redux-actions');
 
 var _actions = require('../actions');
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-var reducer = (0, _reduxActions.handleActions)(_defineProperty({}, _actions.fetchEntries, function (state, action) {
+var reducer = (0, _reduxActions.handleActions)((_handleActions = {}, _defineProperty(_handleActions, _actions.fetchEntries, function (state, action) {
   return Object.assign({}, state, {
     entries: action.payload
   });
-}), {
-  entries: []
+}), _defineProperty(_handleActions, _actions.fetchEntry, function (state, action) {
+  return Object.assign({}, state, {
+    entry: action.payload
+  });
+}), _handleActions), {
+  entries: [],
+  entry: null
 });
 
 exports.default = reducer;
