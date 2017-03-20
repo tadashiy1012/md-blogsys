@@ -7,4 +7,9 @@ route.get('/', async (ctx, next) => {
   ctx.body = JSON.stringify(entries);
 });
 
+route.get('/:id', async (ctx, next) => {
+  const entry = await service.find(ctx.params.id);
+  ctx.body = JSON.stringify(entry);
+});
+
 module.exports = route;
