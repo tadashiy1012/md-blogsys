@@ -8,7 +8,7 @@ import { Route } from 'react-router';
 import { ConnectedRouter, routerReducer, routerMiddleware, push } from 'react-router-redux';
 import promiseMiddleware from 'redux-promise';
 import reducer from './reducers';
-import { Entries, LatestList } from './components';
+import { Entries, Entry, LatestList } from './components';
 
 const history = createHistory();
 const middlewares = [routerMiddleware(history), promiseMiddleware];
@@ -36,12 +36,28 @@ const App1 = ({}) => {
   );
 };
 
+const App2 = ({}) => {
+  return (
+    <div className='contents'>
+      <section className='left'>
+        <h2>nav</h2>
+        <LatestList />
+      </section>
+      <section className='right'>
+        <h2>contents</h2>
+        <Entry />
+      </section>
+    </div>
+  );
+};
+
 window.addEventListener('load', () => {
   ReactDOM.render(
     <Provider store={store}>
       <ConnectedRouter history={history}>
         <div>
           <Route exact path="/" component={App1} />
+          <Route path="/entry" component={App2} />
         </div>
       </ConnectedRouter>
     </Provider>,

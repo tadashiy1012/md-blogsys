@@ -28,14 +28,13 @@ const LatestList = (() => {
       <ul>{node}</ul>
     );
   };
-  return connect((state) => {
+  return connect((state, props) => {
     return { ls: state.reducer.entries };
   }, (dispatch) => {
     return {
       onRead: () => { dispatch(fetchEntries()); },
       onLinkClick: (tgtId) => { 
-        console.log(tgtId);
-        dispatch(push('/app2'));
+        dispatch(push('/entry?id=' + tgtId));
       }
     };
   })(Container);

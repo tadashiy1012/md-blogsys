@@ -35,6 +35,6 @@ export const fetchEntries = createAction('FETCH_ENTRIES', async () => {
 });
 
 export const fetchEntry = createAction('FETCH_ENTRY', async (tgtId) => {
-  const resulet = await execFetchOne(tgtId);
+  const result = await execFetchOne(tgtId);
   return result;
 });
