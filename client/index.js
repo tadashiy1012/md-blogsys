@@ -8,7 +8,7 @@ import { Route } from 'react-router';
 import { ConnectedRouter, routerReducer, routerMiddleware, push } from 'react-router-redux';
 import promiseMiddleware from 'redux-promise';
 import reducer from './reducers';
-import { Entries, Entry, LatestList } from './components';
+import { Entries, Entry, LatestList, BackToHome } from './components';
 
 const history = createHistory();
 const middlewares = [routerMiddleware(history), promiseMiddleware];
@@ -26,11 +26,13 @@ const App1 = ({}) => {
     <div className='contents'>
       <section className='left'>
         <h2>nav</h2>
+        <BackToHome />
         <LatestList />
       </section>
       <section className='right'>
         <h2>contents</h2>
         <Entries />
+        <BackToHome />
       </section>
     </div>
   );
@@ -41,11 +43,13 @@ const App2 = ({}) => {
     <div className='contents'>
       <section className='left'>
         <h2>nav</h2>
+        <BackToHome />
         <LatestList />
       </section>
       <section className='right'>
         <h2>contents</h2>
         <Entry />
+        <BackToHome />
       </section>
     </div>
   );
