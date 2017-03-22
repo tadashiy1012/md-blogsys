@@ -8,7 +8,7 @@ const LatestList = (() => {
     const url = '/entry/' + item.id;
     return (
       <li>
-        <a onClick={(e) => {
+        <a href='#' onClick={(e) => {
           e.preventDefault();
           click(item.id);
         }}>{item.title}</a>

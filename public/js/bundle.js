@@ -407,7 +407,7 @@ var LatestList = function () {
       null,
       _react2.default.createElement(
         'a',
-        { onClick: function onClick(e) {
+        { href: '#', onClick: function onClick(e) {
             e.preventDefault();
             click(item.id);
           } },
