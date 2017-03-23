@@ -8,10 +8,10 @@ route.get('/', async (ctx, next) => {
     if (service.getLogged(name)) {
       ctx.render('admin/index');
     } else {
-      ctx.response.redirect('/');
+      ctx.redirect('/login');
     }
   } else {
-    ctx.response.redirect('/');
+    ctx.redirect('/login');
   }
 });
 

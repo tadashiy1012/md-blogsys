@@ -13,7 +13,7 @@ route.post('/', async (ctx, next) => {
   const login = service.execLogin(name, pass);
   if (login) {
     ctx.session.name = name;
-    ctx.redirect('/');
+    ctx.redirect('/admin');
   } else {
     ctx.render('login/fail');
   }
