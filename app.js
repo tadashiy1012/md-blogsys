@@ -6,6 +6,7 @@ const session = require('koa-session');
 const bodyParser = require('koa-bodyparser');
 const pug = require('js-koa-pug');
 const index = require('./routes/index.js');
+const admin = require('./routes/admin.js');
 const user = require('./routes/user.js');
 const login = require('./routes/login.js');
 const entry = require('./routes/entry.js');
@@ -39,6 +40,7 @@ app.use(async (ctx, next) => {
 app.use(serve(__dirname + '/public'));
 
 router.use('/', index.routes());
+router.use('/admin', admin.routes());
 router.use('/user', user.routes());
 router.use('/login', login.routes());
 router.use('/entry', entry.routes());
