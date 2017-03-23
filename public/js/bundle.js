@@ -429,9 +429,18 @@ var LatestList = function () {
       return _react2.default.createElement(Item, { key: idx, item: item, click: onLinkClick });
     });
     return _react2.default.createElement(
-      'ul',
+      'div',
       null,
-      node
+      _react2.default.createElement(
+        'h4',
+        null,
+        'latest entries'
+      ),
+      _react2.default.createElement(
+        'ul',
+        null,
+        node
+      )
     );
   };
   return (0, _reactRedux.connect)(function (state, props) {
@@ -542,8 +551,8 @@ var App1 = function App1(_ref) {
         null,
         'nav'
       ),
-      _react2.default.createElement(_components.BackToHome, null),
-      _react2.default.createElement(_components.LatestList, null)
+      _react2.default.createElement(_components.LatestList, null),
+      _react2.default.createElement(_components.BackToHome, null)
     ),
     _react2.default.createElement(
       'section',
@@ -573,8 +582,8 @@ var App2 = function App2(_ref2) {
         null,
         'nav'
       ),
-      _react2.default.createElement(_components.BackToHome, null),
-      _react2.default.createElement(_components.LatestList, null)
+      _react2.default.createElement(_components.LatestList, null),
+      _react2.default.createElement(_components.BackToHome, null)
     ),
     _react2.default.createElement(
       'section',

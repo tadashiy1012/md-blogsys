@@ -25,7 +25,10 @@ const LatestList = (() => {
       return (<Item key={idx} item={item} click={onLinkClick} />);
     });
     return (
-      <ul>{node}</ul>
+      <div>
+        <h4>latest entries</h4>
+        <ul>{node}</ul>
+      </div>
     );
   };
   return connect((state, props) => {

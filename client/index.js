@@ -26,8 +26,8 @@ const App1 = ({}) => {
     <div className='contents'>
       <section className='left'>
         <h2>nav</h2>
-        <BackToHome />
         <LatestList />
+        <BackToHome />
       </section>
       <section className='right'>
         <h2>contents</h2>
@@ -43,8 +43,8 @@ const App2 = ({}) => {
     <div className='contents'>
       <section className='left'>
         <h2>nav</h2>
-        <BackToHome />
         <LatestList />
+        <BackToHome />
       </section>
       <section className='right'>
         <h2>contents</h2>
