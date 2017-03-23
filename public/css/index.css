@@ -1,3 +1,14 @@
+div#header {
+  width: 100%;
+  display: flex;
+}
+div#header > section.left {
+  width: 100%;
+}
+div#header > section.right {
+  width: 300px;
+  text-align: right;
+}
 div.contents {
   width: 100%;
   display: flex;

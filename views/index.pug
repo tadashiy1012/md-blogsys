@@ -1,9 +1,12 @@
 doctype html
 html
   head
-    title index
+    title= title
     link(rel='stylesheet' href='css/index.css')
   body
-    h1 index
+    #header
+      section.left: h1= title
+      section.right
+        a(href='/login') login
     #root
     script(src='js/bundle.js')
