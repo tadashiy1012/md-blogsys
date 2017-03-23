@@ -38,30 +38,13 @@ const App1 = ({}) => {
   );
 };
 
-const App2 = ({}) => {
-  return (
-    <div className='contents'>
-      <section className='left'>
-        <h2>nav</h2>
-        <LatestList />
-        <BackToHome />
-      </section>
-      <section className='right'>
-        <h2>contents</h2>
-        <Entry />
-        <BackToHome />
-      </section>
-    </div>
-  );
-};
-
 window.addEventListener('load', () => {
   ReactDOM.render(
     <Provider store={store}>
       <ConnectedRouter history={history}>
         <div>
           <Route exact path="/" component={App1} />
-          <Route path="/entry" component={App2} />
+          <Route path="/entry" component={App1} />
         </div>
       </ConnectedRouter>
     </Provider>,

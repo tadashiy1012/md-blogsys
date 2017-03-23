@@ -152,85 +152,33 @@ var _reactRedux = require('react-redux');
 
 var _actions = require('../actions');
 
+var _ = require('./');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Entries = function () {
-  var DateItem = function DateItem(_ref) {
-    var dt = _ref.dt;
-
-    var date = new Date(dt);
-    return _react2.default.createElement(
-      'span',
-      { style: { 'fontSize': 12 } },
-      date.getFullYear(),
-      _react2.default.createElement(
-        'span',
-        null,
-        '-'
-      ),
-      date.getMonth() + 1,
-      _react2.default.createElement(
-        'span',
-        null,
-        '-'
-      ),
-      date.getDate(),
-      _react2.default.createElement(
-        'span',
-        null,
-        ' '
-      ),
-      date.getHours(),
-      _react2.default.createElement(
-        'span',
-        null,
-        ':'
-      ),
-      date.getMinutes()
-    );
-  };
-  var Item = function Item(_ref2) {
-    var item = _ref2.item;
-
-    return _react2.default.createElement(
-      'li',
-      { style: { 'listStyleType': 'none', 'marginBottom': 20 } },
-      _react2.default.createElement(
-        'div',
-        null,
-        _react2.default.createElement(
-          'h3',
-          null,
-          item.title
-        )
-      ),
-      _react2.default.createElement(
-        'div',
-        null,
-        _react2.default.createElement(
-          'p',
-          null,
-          item.body
-        )
-      ),
-      _react2.default.createElement(
-        'div',
-        null,
-        _react2.default.createElement(DateItem, { dt: item.date })
-      )
-    );
-  };
   var init = false;
-  var EntriesContainer = function EntriesContainer(_ref3) {
-    var onRead = _ref3.onRead,
-        ls = _ref3.ls;
+  var tempId = null;
+  var EntriesContainer = function EntriesContainer(_ref) {
+    var onRead = _ref.onRead,
+        onReadOne = _ref.onReadOne,
+        id = _ref.id,
+        ls = _ref.ls;
 
-    if (!init) {
-      init = true;
-      onRead();
+    if (id) {
+      if (tempId !== id) {
+        onReadOne(id);
+      }
+      init = false;
+    } else {
+      if (!init) {
+        onRead();
+        init = true;
+      }
     }
+    tempId = id;
     var node = ls.map(function (item, idx) {
-      return _react2.default.createElement(Item, { key: idx, item: item });
+      return _react2.default.createElement(_.Entry, { key: idx, entry: item });
     });
     return _react2.default.createElement(
       'ul',
@@ -238,12 +186,19 @@ var Entries = function () {
       node
     );
   };
-  return (0, _reactRedux.connect)(function (state) {
-    return { ls: state.reducer.entries };
+  return (0, _reactRedux.connect)(function (state, props) {
+    var id = state.router.location.search.split('=')[1] || null;
+    return {
+      id: id,
+      ls: state.reducer.entries
+    };
   }, function (dispatch) {
     return {
       onRead: function onRead() {
         dispatch((0, _actions.fetchEntries)());
+      },
+      onReadOne: function onReadOne(tgtId) {
+        dispatch((0, _actions.fetchEntry)(tgtId));
       }
     };
   })(EntriesContainer);
@@ -251,7 +206,7 @@ var Entries = function () {
 
 exports.default = Entries;
 
-},{"../actions":1,"react":610,"react-redux":565}],4:[function(require,module,exports){
+},{"../actions":1,"./":6,"react":610,"react-redux":565}],4:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -303,8 +258,8 @@ var Entry = function () {
       date.getMinutes()
     );
   };
-  var Item = function Item(_ref2) {
-    var item = _ref2.item;
+  var Container = function Container(_ref2) {
+    var entry = _ref2.entry;
 
     return _react2.default.createElement(
       'div',
@@ -315,7 +270,7 @@ var Entry = function () {
         _react2.default.createElement(
           'h3',
           null,
-          item.title
+          entry.title
         )
       ),
       _react2.default.createElement(
@@ -324,54 +279,22 @@ var Entry = function () {
         _react2.default.createElement(
           'p',
           null,
-          item.body
+          entry.body
         )
       ),
       _react2.default.createElement(
         'div',
         null,
-        _react2.default.createElement(DateItem, { dt: item.date })
+        _react2.default.createElement(DateItem, { dt: entry.date })
       )
     );
   };
-  var init = false;
-  var currentId = null;
-  var Container = function Container(_ref3) {
-    var id = _ref3.id,
-        entry = _ref3.entry,
-        onRead = _ref3.onRead;
-
-    if (currentId !== id) {
-      currentId = id;
-      if (currentId) {
-        init = false;
-      }
-    }
-    if (!init) {
-      onRead(currentId);
-      init = true;
-    }
-    if (entry === null || entry === undefined) {
-      return _react2.default.createElement(
-        'div',
-        null,
-        'not found'
-      );
-    } else {
-      return _react2.default.createElement(Item, { item: entry[0] });
-    }
-  };
   return (0, _reactRedux.connect)(function (state, props) {
     return {
-      id: state.router.location.search.split('=')[1],
-      entry: state.reducer.entry
+      entry: props.entry
     };
   }, function (dispatch) {
-    return {
-      onRead: function onRead(tgtId) {
-        dispatch((0, _actions.fetchEntry)(tgtId));
-      }
-    };
+    return {};
   })(Container);
 }();
 
@@ -568,37 +491,6 @@ var App1 = function App1(_ref) {
   );
 };
 
-var App2 = function App2(_ref2) {
-  _objectDestructuringEmpty(_ref2);
-
-  return _react2.default.createElement(
-    'div',
-    { className: 'contents' },
-    _react2.default.createElement(
-      'section',
-      { className: 'left' },
-      _react2.default.createElement(
-        'h2',
-        null,
-        'nav'
-      ),
-      _react2.default.createElement(_components.LatestList, null),
-      _react2.default.createElement(_components.BackToHome, null)
-    ),
-    _react2.default.createElement(
-      'section',
-      { className: 'right' },
-      _react2.default.createElement(
-        'h2',
-        null,
-        'contents'
-      ),
-      _react2.default.createElement(_components.Entry, null),
-      _react2.default.createElement(_components.BackToHome, null)
-    )
-  );
-};
-
 window.addEventListener('load', function () {
   _reactDom2.default.render(_react2.default.createElement(
     _reactRedux.Provider,
@@ -610,7 +502,7 @@ window.addEventListener('load', function () {
         'div',
         null,
         _react2.default.createElement(_reactRouter.Route, { exact: true, path: '/', component: App1 }),
-        _react2.default.createElement(_reactRouter.Route, { path: '/entry', component: App2 })
+        _react2.default.createElement(_reactRouter.Route, { path: '/entry', component: App1 })
       )
     )
   ), document.getElementById('root'));
@@ -638,11 +530,11 @@ var reducer = (0, _reduxActions.handleActions)((_handleActions = {}, _defineProp
   });
 }), _defineProperty(_handleActions, _actions.fetchEntry, function (state, action) {
   return Object.assign({}, state, {
-    entry: action.payload
+    entries: action.payload
   });
 }), _handleActions), {
   entries: [],
-  entry: null
+  titles: []
 });
 
 exports.default = reducer;

@@ -19,45 +19,21 @@ const Entry = (() => {
       </span>
     );
   };
-  const Item = ({item}) => {
+  const Container = ({entry}) => {
     return (
       <div>
-        <div><h3>{item.title}</h3></div>
-        <div><p>{item.body}</p></div>
-        <div><DateItem dt={item.date} /></div>
+        <div><h3>{entry.title}</h3></div>
+        <div><p>{entry.body}</p></div>
+        <div><DateItem dt={entry.date} /></div>
       </div>
     );
   };
-  let init = false;
-  let currentId = null;
-  const Container = ({id, entry, onRead}) => {
-    if (currentId !== id) {
-      currentId = id;
-      if (currentId) {
-        init = false;
-      }
-    }
-    if (!init) {
-      onRead(currentId);
-      init = true;
-    }
-    if (entry === null || entry === undefined) {
-      return (<div>not found</div>)
-    } else {
-      return (<Item item={entry[0]} />);
-    }
-  };
   return connect((state, props) => {
-    return { 
-      id: state.router.location.search.split('=')[1],
-      entry: state.reducer.entry
+    return {
+      entry: props.entry
     };
   }, (dispatch) => {
-    return {
-      onRead: (tgtId) => {
-        dispatch(fetchEntry(tgtId));
-      }
-    };
+    return {};
   })(Container);
 })();
 

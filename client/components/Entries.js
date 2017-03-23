@@ -1,41 +1,26 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { fetchEntries } from '../actions';
+import { fetchEntries, fetchEntry } from '../actions';
+import { Entry } from './';
 
 const Entries = (() => {
-  const DateItem = ({dt}) => {
-    const date = new Date(dt);
-    return (
-      <span style={{'fontSize': 12}}>
-        {date.getFullYear()}
-        <span>-</span>
-        {date.getMonth() + 1}
-        <span>-</span>
-        {date.getDate()}
-        <span> </span>
-        {date.getHours()}
-        <span>:</span>
-        {date.getMinutes()}
-      </span>
-    );
-  };
-  const Item = ({item}) => {
-    return (
-      <li style={{'listStyleType': 'none', 'marginBottom': 20}}>
-        <div><h3>{item.title}</h3></div>
-        <div><p>{item.body}</p></div>
-        <div><DateItem dt={item.date} /></div>
-      </li>
-    );
-  };
   let init = false;
-  const EntriesContainer = ({onRead, ls}) => {
-    if (!init) {
-      init = true;
-      onRead();
+  let tempId = null;
+  const EntriesContainer = ({onRead, onReadOne, id, ls}) => {
+    if (id) {
+      if (tempId !== id) {
+        onReadOne(id);
+      }
+      init = false;
+    } else {
+      if (!init) {
+        onRead();
+        init = true;
+      }
     }
+    tempId = id;
     let node = ls.map((item, idx) => {
-      return (<Item key={idx} item={item} />);
+      return (<Entry key={idx} entry={item} />);
     });
     return (
       <ul style={{'paddingLeft': 0}}>
@@ -43,13 +28,20 @@ const Entries = (() => {
       </ul>
     );
   };
-  return connect((state) => {
-    return { ls: state.reducer.entries };
+  return connect((state, props) => {
+    const id = state.router.location.search.split('=')[1] || null;
+    return {
+      id,
+      ls: state.reducer.entries
+    };
   }, (dispatch) => {
     return {
       onRead: () => {
         dispatch(fetchEntries());
-      }
+      },
+      onReadOne: (tgtId) => {
+        dispatch(fetchEntry(tgtId));
+      } 
     };
   })(EntriesContainer);
 })();

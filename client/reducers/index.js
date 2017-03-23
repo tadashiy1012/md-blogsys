@@ -9,12 +9,12 @@ const reducer = handleActions({
   },
   [fetchEntry]: (state, action) => {
     return Object.assign({}, state, {
-      entry: action.payload
+      entries: action.payload
     });
   }
 }, {
   entries: [],
-  entry: null
+  titles: []
 });
 
 export default reducer;
