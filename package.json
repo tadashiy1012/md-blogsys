@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js",
-    "build-cl": "browserify client/index.js -t [babelify --sourceMap] -d | exorcist public/js/bundle.js.map > public/js/bundle.js"
+    "build-cl": "browserify client/index.js -t [babelify --sourceMap] -d | exorcist public/js/bundle.js.map > public/js/bundle.js",
+    "build-ad": "browserify adminClient/index.js -t [babelify --sourceMap] -d | exorcist public/js/adBundle.js.map > public/js/adBundle.js"
   },
   "keywords": [],
   "author": "",
