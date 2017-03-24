@@ -38,3 +38,10 @@ export const fetchEntry = createAction('FETCH_ENTRY', async (tgtId) => {
   const result = await execFetchOne(tgtId);
   return result;
 });
+
+export const fetchTitles = createAction('FETCH_TITLES', async () => {
+  const result = await execFetch();
+  return result.map((item) => {
+    return {id: item.id, title: item.title};
+  });
+});

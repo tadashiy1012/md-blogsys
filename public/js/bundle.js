@@ -4,7 +4,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.fetchEntry = exports.fetchEntries = undefined;
+exports.fetchTitles = exports.fetchEntry = exports.fetchEntries = undefined;
 
 var _reduxActions = require('redux-actions');
 
@@ -91,6 +91,29 @@ var fetchEntry = exports.fetchEntry = (0, _reduxActions.createAction)('FETCH_ENT
     return _ref2.apply(this, arguments);
   };
 }());
+
+var fetchTitles = exports.fetchTitles = (0, _reduxActions.createAction)('FETCH_TITLES', _asyncToGenerator(regeneratorRuntime.mark(function _callee3() {
+  var result;
+  return regeneratorRuntime.wrap(function _callee3$(_context3) {
+    while (1) {
+      switch (_context3.prev = _context3.next) {
+        case 0:
+          _context3.next = 2;
+          return execFetch();
+
+        case 2:
+          result = _context3.sent;
+          return _context3.abrupt('return', result.map(function (item) {
+            return { id: item.id, title: item.title };
+          }));
+
+        case 4:
+        case 'end':
+          return _context3.stop();
+      }
+    }
+  }, _callee3, undefined);
+})));
 
 },{"redux-actions":619,"superagent":632}],2:[function(require,module,exports){
 'use strict';
@@ -367,11 +390,11 @@ var LatestList = function () {
     );
   };
   return (0, _reactRedux.connect)(function (state, props) {
-    return { ls: state.reducer.entries };
+    return { ls: state.reducer.titles };
   }, function (dispatch) {
     return {
       onRead: function onRead() {
-        dispatch((0, _actions.fetchEntries)());
+        dispatch((0, _actions.fetchTitles)());
       },
       onLinkClick: function onLinkClick(tgtId) {
         dispatch((0, _reactRouterRedux.push)('/entry?id=' + tgtId));
@@ -531,6 +554,10 @@ var reducer = (0, _reduxActions.handleActions)((_handleActions = {}, _defineProp
 }), _defineProperty(_handleActions, _actions.fetchEntry, function (state, action) {
   return Object.assign({}, state, {
     entries: action.payload
+  });
+}), _defineProperty(_handleActions, _actions.fetchTitles, function (state, action) {
+  return Object.assign({}, state, {
+    titles: action.payload
   });
 }), _handleActions), {
   entries: [],

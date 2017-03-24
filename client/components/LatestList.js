@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
-import { fetchEntries } from '../actions';
+import { fetchTitles } from '../actions';
 
 const LatestList = (() => {
   const Item = ({item, click}) => {
@@ -32,10 +32,10 @@ const LatestList = (() => {
     );
   };
   return connect((state, props) => {
-    return { ls: state.reducer.entries };
+    return { ls: state.reducer.titles };
   }, (dispatch) => {
     return {
-      onRead: () => { dispatch(fetchEntries()); },
+      onRead: () => { dispatch(fetchTitles()); },
       onLinkClick: (tgtId) => { 
         dispatch(push('/entry?id=' + tgtId));
       }
