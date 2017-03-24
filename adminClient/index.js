@@ -8,7 +8,7 @@ import { Route } from 'react-router';
 import { ConnectedRouter, routerReducer, routerMiddleware, push } from 'react-router-redux';
 import promiseMiddleware from 'redux-promise';
 import reducer from './reducers';
-import {} from './components';
+import { Link, Contents } from './components';
 
 const history = createHistory();
 const middlewares = [routerMiddleware(history), promiseMiddleware];
@@ -24,7 +24,25 @@ const store = createStore(
 const App = () => {
   return (
     <div>
-      <h1>admin</h1>
+      <div className='header'>
+        <h1>admin</h1>
+      </div>
+      <div className='contents'>
+        <section className='left'>
+          <h2>nav</h2>
+          <ul>
+            <li><Link to='write'>write entry</Link></li>
+            <li><Link to='entries'>manage to entries</Link></li>
+            <li><Link to='setting'>blog settings</Link></li>
+          </ul>
+          <Link to='/'>Back to Admin Home</Link>
+          <br />
+          <Link to='/'>Logout</Link>
+        </section>
+        <section className='right'>
+          <Contents />
+        </section>
+      </div>
     </div>
   );
 };
@@ -35,6 +53,9 @@ window.addEventListener('load', () => {
       <ConnectedRouter history={history}>
         <div>
           <Route exact path="/" component={App} />
+          <Route path="/write" component={App} />
+          <Route path="/entries" component={App} />
+          <Route path="/setting" component={App} />
         </div>
       </ConnectedRouter>
     </Provider>,

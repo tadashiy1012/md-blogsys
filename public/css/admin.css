@@ -1,0 +1,10 @@
+div.contents {
+  width: 100%;
+  display: flex;
+}
+div.contents > section.left {
+  width: 340px;
+}
+div.contents > section.right {
+  width: 100%;
+}
