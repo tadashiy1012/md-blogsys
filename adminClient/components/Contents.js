@@ -8,7 +8,7 @@ const ContentsSplitter = (() => {
   const Container = ({mode}) => {
     let contents = <HomeContents />;
     switch (mode) {
-      case '/wite':
+      case '/write':
         contents = <WriteContents />;
         break;
       case '/entries':

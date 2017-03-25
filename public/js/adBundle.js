@@ -43,7 +43,7 @@ var ContentsSplitter = function () {
 
     var contents = _react2.default.createElement(_.HomeContents, null);
     switch (mode) {
-      case '/wite':
+      case '/write':
         contents = _react2.default.createElement(_.WriteContents, null);
         break;
       case '/entries':
