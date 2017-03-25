@@ -2,18 +2,30 @@ import React from 'react';
 import { connect } from 'react-redux';
 import {} from 'react-router-redux';
 import {} from '../actions';
+import { HomeContents, WriteContents, EntriesContents, SettingContents} from './';
 
-const Contents = (() => {
+const ContentsSplitter = (() => {
   const Container = ({mode}) => {
+    let contents = <HomeContents />;
+    switch (mode) {
+      case '/wite':
+        contents = <WriteContents />;
+        break;
+      case '/entries':
+        contents = <EntriesContents />;
+        break;
+      case '/setting':
+        contents = <SettingContents />;
+        break;
+    }
     return (
       <div>
-        <h2>contents</h2>
-        <h3>{mode}</h3>
+        <h2>contents {mode}</h2>
+        <div>{contents}</div>
       </div>
     );
   };
   return connect((state, props) => {
-    console.log(state);
     return {
       mode: state.router.location.pathname
     };
@@ -22,4 +34,4 @@ const Contents = (() => {
   })(Container);
 })(); 
 
-export default Contents;
+export default ContentsSplitter;

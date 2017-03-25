@@ -1,5 +1,5 @@
 import { handleAction, handleActions } from 'redux-actions';
-import { echo } from '../actions';
+import { echo, switchContents } from '../actions';
 
 const reducer = handleActions({
   [echo]: (state, action) => {

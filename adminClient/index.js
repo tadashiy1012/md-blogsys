@@ -8,7 +8,7 @@ import { Route } from 'react-router';
 import { ConnectedRouter, routerReducer, routerMiddleware, push } from 'react-router-redux';
 import promiseMiddleware from 'redux-promise';
 import reducer from './reducers';
-import { Link, Contents } from './components';
+import { Link, ContentsSplitter } from './components';
 
 const history = createHistory();
 const middlewares = [routerMiddleware(history), promiseMiddleware];
@@ -40,7 +40,7 @@ const App = () => {
           <Link to='/'>Logout</Link>
         </section>
         <section className='right'>
-          <Contents />
+          <ContentsSplitter />
         </section>
       </div>
     </div>
