@@ -22,6 +22,13 @@ const EntryService = (() => {
       const q = 'select * from entry where id =' + tgtId + ';';
       return this.dbService.execQuery(q);
     }
+    post(title, body, authorId) {
+      const dt = new Date(Date.now());
+      const date = dt.getFullYear() + '-' + (dt.getMonth() + 1) + '-' + dt.getDate() + ' ' + dt.getHours() + ':' + dt.getMinutes() + ':' + dt.getSeconds();
+      const q = 'insert into entry (id, title, authorId, body, date) ' 
+        + ' values (null, "' + title + '", "' + authorId +'", "' + body + '", "' + date +'");';
+      return this.dbService.execQuery(q);
+    }
   }
 })();
 module.exports = EntryService;
