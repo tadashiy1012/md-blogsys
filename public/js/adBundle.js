@@ -4,7 +4,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.echo = undefined;
+exports.rePostResult = exports.postEntry = exports.echo = undefined;
 
 var _reduxActions = require('redux-actions');
 
@@ -14,7 +14,50 @@ var _superagent2 = _interopRequireDefault(_superagent);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
+
+var execPost = function execPost(title, body) {
+  return new Promise(function (resolve, reject) {
+    var url = '/admin/entry';
+    _superagent2.default.post(url).send({ title: title, body: body }).set('Accept', 'application/json').end(function (err, res) {
+      if (err) {
+        reject(err);
+      } else {
+        var obj = JSON.parse(res.text);
+        resolve(obj);
+      }
+    });
+  });
+};
+
 var echo = exports.echo = (0, _reduxActions.createAction)('ECHO');
+var postEntry = exports.postEntry = (0, _reduxActions.createAction)('POST_ENTRY', function () {
+  var _ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee(title, body) {
+    var result;
+    return regeneratorRuntime.wrap(function _callee$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            _context.next = 2;
+            return execPost(title, body);
+
+          case 2:
+            result = _context.sent;
+            return _context.abrupt('return', result);
+
+          case 4:
+          case 'end':
+            return _context.stop();
+        }
+      }
+    }, _callee, undefined);
+  }));
+
+  return function (_x, _x2) {
+    return _ref.apply(this, arguments);
+  };
+}());
+var rePostResult = exports.rePostResult = (0, _reduxActions.createAction)('RE_POST_RESULT');
 
 },{"redux-actions":733,"superagent":805}],2:[function(require,module,exports){
 'use strict';
@@ -259,7 +302,7 @@ var _reactMarkdown = require('react-markdown');
 
 var _reactMarkdown2 = _interopRequireDefault(_reactMarkdown);
 
-require('../actions');
+var _actions = require('../actions');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -290,16 +333,36 @@ var WriteContents = function () {
     );
   });
   var input = '';
+  var inTitle = 'no title';
+  var inBody = 'no body';
+  var result = null;
   var Container = function Container(_ref2) {
-    var formVal = _ref2.formVal;
+    var formVal = _ref2.formVal,
+        postResult = _ref2.postResult,
+        handlePostEntry = _ref2.handlePostEntry,
+        handleRePResult = _ref2.handleRePResult;
 
     if (formVal.write) {
       if (formVal.write.values && formVal.write.values.inBody) {
-        input = formVal.write.values.inBody;
+        inBody = input = formVal.write.values.inBody;
+      }
+      if (formVal.write.values && formVal.write.values.inTitle) {
+        inTitle = formVal.write.values.inTitle;
       }
       if (input && (!formVal.write.values || !formVal.write.values.inBody)) {
         input = '';
+        inBody = 'no body';
+        if (!formVal.write.values.inTitle) {
+          inTitle = 'no title';
+        }
       }
+    }
+    if (postResult) {
+      console.log(postResult);
+      if (postResult.status === 200) {
+        alert('post success!');
+      }
+      handleRePResult();
     }
     return _react2.default.createElement(
       'div',
@@ -328,17 +391,28 @@ var WriteContents = function () {
       _react2.default.createElement('hr', null),
       _react2.default.createElement(
         'button',
-        null,
+        { onClick: function onClick(e) {
+            e.preventDefault();
+            handlePostEntry(inTitle, inBody);
+          } },
         'submit'
       )
     );
   };
   return (0, _reactRedux.connect)(function (state, props) {
     return {
-      formVal: state.form
+      formVal: state.form,
+      postResult: state.reducer.postResult
     };
   }, function (dispatch) {
-    return {};
+    return {
+      handlePostEntry: function handlePostEntry(title, body) {
+        dispatch((0, _actions.postEntry)(title, body));
+      },
+      handleRePResult: function handleRePResult() {
+        dispatch((0, _actions.rePostResult)(null));
+      }
+    };
   })(Container);
 }();
 
@@ -536,18 +610,29 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _handleActions;
+
 var _reduxActions = require('redux-actions');
 
 var _actions = require('../actions');
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-var reducer = (0, _reduxActions.handleActions)(_defineProperty({}, _actions.echo, function (state, action) {
+var reducer = (0, _reduxActions.handleActions)((_handleActions = {}, _defineProperty(_handleActions, _actions.echo, function (state, action) {
   return Object.assign({}, state, {
     echoMsg: action.payload
   });
-}), {
-  echoMsg: ''
+}), _defineProperty(_handleActions, _actions.postEntry, function (state, action) {
+  return Object.assign({}, state, {
+    postResult: action.payload
+  });
+}), _defineProperty(_handleActions, _actions.rePostResult, function (state, action) {
+  return Object.assign({}, state, {
+    postResult: action.payload
+  });
+}), _handleActions), {
+  echoMsg: '',
+  postResult: null
 });
 
 exports.default = reducer;

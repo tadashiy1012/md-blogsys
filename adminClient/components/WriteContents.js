@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import {} from 'react-router-redux';
 import { Field, reduxForm } from 'redux-form';
 import ReactMarkdown from 'react-markdown';
-import {} from '../actions';
+import { postEntry, rePostResult } from '../actions';
 
 const WriteContents = (() => {
   const WriteForm = reduxForm({form: 'write'})(({}) => {
@@ -20,14 +20,31 @@ const WriteContents = (() => {
     );
   });
   let input = '';
-  const Container = ({formVal}) => {
+  let inTitle = 'no title';
+  let inBody = 'no body';
+  let result = null;
+  const Container = ({formVal, postResult, handlePostEntry, handleRePResult}) => {
     if (formVal.write) {
       if (formVal.write.values && formVal.write.values.inBody) {
-        input = formVal.write.values.inBody;
+        inBody = input = formVal.write.values.inBody;
+      }
+      if (formVal.write.values && formVal.write.values.inTitle) {
+        inTitle = formVal.write.values.inTitle;
       }
       if (input && (!formVal.write.values || !formVal.write.values.inBody)) {
         input = '';
+        inBody = 'no body';
+        if (!formVal.write.values.inTitle) {
+          inTitle = 'no title';
+        }
       }
+    }
+    if (postResult) {
+      console.log(postResult);
+      if (postResult.status === 200) {
+        alert('post success!');
+      }
+      handleRePResult();
     }
     return (
       <div>
@@ -40,16 +57,27 @@ const WriteContents = (() => {
           </div>
         </div>
         <hr />
-        <button>submit</button>
+        <button onClick={(e) => {
+          e.preventDefault();
+          handlePostEntry(inTitle, inBody);
+        }}>submit</button>
       </div>
     );
   };
   return connect((state, props) => {
     return {
-      formVal: state.form
+      formVal: state.form,
+      postResult: state.reducer.postResult
     };
   }, (dispatch) => {
-    return {};
+    return {
+      handlePostEntry: (title, body) => {
+        dispatch(postEntry(title, body));
+      },
+      handleRePResult: () => {
+        dispatch(rePostResult(null));
+      }
+    };
   })(Container);
 })();
 
