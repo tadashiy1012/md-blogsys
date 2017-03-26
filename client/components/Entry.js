@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import ReactMarkdown from 'react-markdown';
 import { fetchEntry } from '../actions';
 
 const Entry = (() => {
@@ -23,7 +24,7 @@ const Entry = (() => {
     return (
       <div>
         <div><h3>{entry.title}</h3></div>
-        <div><p>{entry.body}</p></div>
+        <div><ReactMarkdown source={entry.body} /></div>
         <div><DateItem dt={entry.date} /></div>
       </div>
     );
