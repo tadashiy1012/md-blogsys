@@ -18,6 +18,10 @@ const EntryService = (() => {
       const q = 'SELECT * FROM `entry` ORDER BY `entry`.`id` DESC LIMIT 0, 10;';
       return this.dbService.execQuery(q);
     }
+    range(start, end) {
+      const q = 'select * from entry order by id desc limit ' + start + ', ' + end + ';';
+      return this.dbService.execQuery(q);
+    }
     find(tgtId) {
       const q = 'select * from entry where id =' + tgtId + ';';
       return this.dbService.execQuery(q);
@@ -27,6 +31,14 @@ const EntryService = (() => {
       const date = dt.getFullYear() + '-' + (dt.getMonth() + 1) + '-' + dt.getDate() + ' ' + dt.getHours() + ':' + dt.getMinutes() + ':' + dt.getSeconds();
       const q = 'insert into entry (id, title, authorId, body, date) ' 
         + ' values (null, "' + title + '", "' + authorId +'", "' + body + '", "' + date +'");';
+      return this.dbService.execQuery(q);
+    }
+    update(id, title, body) {
+      const q = 'update entry set `title` = "' + title + '", `body` = "' + body + '" where id = ' + id + ';';
+      return this.dbService.execQuery(q);
+    }
+    del(id) {
+      const q = 'delete from entry where id = ' + id + ';';
       return this.dbService.execQuery(q);
     }
   }
