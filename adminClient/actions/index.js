@@ -16,6 +16,30 @@ const execPost = (title, body) => {
       })
   });
 };
+const execFetchAll = () => {
+  return new Promise((resolve, reject) => {
+    const url = '/admin/entries';
+    request.get(url).end((err, res) => {
+      if (err) { reject(err); }
+      else {
+        const obj = JSON.parse(res.text);
+        resolve(obj);
+      }
+    });
+  });
+};
+const execFetchOne = (tgtId) => {
+  return new Promise((resolve, reject) => {
+    const url = '/admin/entry/' + tgtId;
+    request.get(url).end((err, res) => {
+      if (err) { reject(err); }
+      else {
+        const obj = JSON.parse(res.text);
+        resolve(obj);
+      }
+    });
+  });
+};
 
 export const echo = createAction('ECHO');
 export const postEntry = createAction('POST_ENTRY', async (title, body) => {
@@ -23,3 +47,11 @@ export const postEntry = createAction('POST_ENTRY', async (title, body) => {
   return result;
 });
 export const rePostResult = createAction('RE_POST_RESULT');
+export const fetchAll = createAction('FETCH_ALL', async () => {
+  const result = await execFetchAll();
+  return result;
+});
+export const fetchOne = createAction('FETCH_ONE', async (id) => {
+  const result = await execFetchOne(id);
+  return result;
+});

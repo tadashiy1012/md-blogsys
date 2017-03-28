@@ -1,18 +1,44 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import {} from 'react-router-redux';
-import {} from '../actions';
+import { fetchAll } from '../actions';
 
 const EntriesContents = (() => {
-  const Container = () => {
+  class Entries extends React.Component {
+    constructor(props) {
+      super(props);
+    }
+    componentWillMount() {
+      this.props.handleFetch();
+    }
+    render() {
+      const node = this.props.entries.map((item, idx) => {
+        return (<li key={idx}>{item.title}</li>)
+      });
+      return (
+        <ul>{node}</ul>
+      );
+    }
+  }
+  const Container = ({entries, handleFetch}) => {
     return (
-      <div>entries</div>
+      <div>
+        <h3>entries</h3>
+        <Entries entries={entries} handleFetch={handleFetch} />
+      </div>
     );
   };
   return connect((state, props) => {
-    return {};
+    console.log(state);
+    return {
+      entries: state.reducer.entries
+    };
   }, (dispatch) => {
-    return {};
+    return {
+      handleFetch: () => {
+        dispatch(fetchAll());
+      }
+    };
   })(Container);
 })();
 

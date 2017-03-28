@@ -4,7 +4,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.rePostResult = exports.postEntry = exports.echo = undefined;
+exports.fetchOne = exports.fetchAll = exports.rePostResult = exports.postEntry = exports.echo = undefined;
 
 var _reduxActions = require('redux-actions');
 
@@ -20,6 +20,32 @@ var execPost = function execPost(title, body) {
   return new Promise(function (resolve, reject) {
     var url = '/admin/entry';
     _superagent2.default.post(url).send({ title: title, body: body }).set('Accept', 'application/json').end(function (err, res) {
+      if (err) {
+        reject(err);
+      } else {
+        var obj = JSON.parse(res.text);
+        resolve(obj);
+      }
+    });
+  });
+};
+var execFetchAll = function execFetchAll() {
+  return new Promise(function (resolve, reject) {
+    var url = '/admin/entries';
+    _superagent2.default.get(url).end(function (err, res) {
+      if (err) {
+        reject(err);
+      } else {
+        var obj = JSON.parse(res.text);
+        resolve(obj);
+      }
+    });
+  });
+};
+var execFetchOne = function execFetchOne(tgtId) {
+  return new Promise(function (resolve, reject) {
+    var url = '/admin/entry/' + tgtId;
+    _superagent2.default.get(url).end(function (err, res) {
       if (err) {
         reject(err);
       } else {
@@ -58,6 +84,52 @@ var postEntry = exports.postEntry = (0, _reduxActions.createAction)('POST_ENTRY'
   };
 }());
 var rePostResult = exports.rePostResult = (0, _reduxActions.createAction)('RE_POST_RESULT');
+var fetchAll = exports.fetchAll = (0, _reduxActions.createAction)('FETCH_ALL', _asyncToGenerator(regeneratorRuntime.mark(function _callee2() {
+  var result;
+  return regeneratorRuntime.wrap(function _callee2$(_context2) {
+    while (1) {
+      switch (_context2.prev = _context2.next) {
+        case 0:
+          _context2.next = 2;
+          return execFetchAll();
+
+        case 2:
+          result = _context2.sent;
+          return _context2.abrupt('return', result);
+
+        case 4:
+        case 'end':
+          return _context2.stop();
+      }
+    }
+  }, _callee2, undefined);
+})));
+var fetchOne = exports.fetchOne = (0, _reduxActions.createAction)('FETCH_ONE', function () {
+  var _ref3 = _asyncToGenerator(regeneratorRuntime.mark(function _callee3(id) {
+    var result;
+    return regeneratorRuntime.wrap(function _callee3$(_context3) {
+      while (1) {
+        switch (_context3.prev = _context3.next) {
+          case 0:
+            _context3.next = 2;
+            return execFetchOne(id);
+
+          case 2:
+            result = _context3.sent;
+            return _context3.abrupt('return', result);
+
+          case 4:
+          case 'end':
+            return _context3.stop();
+        }
+      }
+    }, _callee3, undefined);
+  }));
+
+  return function (_x3) {
+    return _ref3.apply(this, arguments);
+  };
+}());
 
 },{"redux-actions":733,"superagent":805}],2:[function(require,module,exports){
 'use strict';
@@ -130,6 +202,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
@@ -138,22 +212,78 @@ var _reactRedux = require('react-redux');
 
 require('react-router-redux');
 
-require('../actions');
+var _actions = require('../actions');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
 var EntriesContents = function () {
-  var Container = function Container() {
+  var Entries = function (_React$Component) {
+    _inherits(Entries, _React$Component);
+
+    function Entries(props) {
+      _classCallCheck(this, Entries);
+
+      return _possibleConstructorReturn(this, (Entries.__proto__ || Object.getPrototypeOf(Entries)).call(this, props));
+    }
+
+    _createClass(Entries, [{
+      key: 'componentWillMount',
+      value: function componentWillMount() {
+        this.props.handleFetch();
+      }
+    }, {
+      key: 'render',
+      value: function render() {
+        var node = this.props.entries.map(function (item, idx) {
+          return _react2.default.createElement(
+            'li',
+            { key: idx },
+            item.title
+          );
+        });
+        return _react2.default.createElement(
+          'ul',
+          null,
+          node
+        );
+      }
+    }]);
+
+    return Entries;
+  }(_react2.default.Component);
+
+  var Container = function Container(_ref) {
+    var entries = _ref.entries,
+        handleFetch = _ref.handleFetch;
+
     return _react2.default.createElement(
       'div',
       null,
-      'entries'
+      _react2.default.createElement(
+        'h3',
+        null,
+        'entries'
+      ),
+      _react2.default.createElement(Entries, { entries: entries, handleFetch: handleFetch })
     );
   };
   return (0, _reactRedux.connect)(function (state, props) {
-    return {};
+    console.log(state);
+    return {
+      entries: state.reducer.entries
+    };
   }, function (dispatch) {
-    return {};
+    return {
+      handleFetch: function handleFetch() {
+        dispatch((0, _actions.fetchAll)());
+      }
+    };
   })(Container);
 }();
 
@@ -630,9 +760,19 @@ var reducer = (0, _reduxActions.handleActions)((_handleActions = {}, _defineProp
   return Object.assign({}, state, {
     postResult: action.payload
   });
+}), _defineProperty(_handleActions, _actions.fetchAll, function (state, action) {
+  return Object.assign({}, state, {
+    entries: action.payload
+  });
+}), _defineProperty(_handleActions, _actions.fetchOne, function (state, action) {
+  return Object.assign({}, state, {
+    entry: action.payload
+  });
 }), _handleActions), {
   echoMsg: '',
-  postResult: null
+  postResult: null,
+  entries: [],
+  entry: null
 });
 
 exports.default = reducer;

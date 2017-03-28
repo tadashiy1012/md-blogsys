@@ -1,5 +1,7 @@
 import { handleAction, handleActions } from 'redux-actions';
-import { echo, postEntry, rePostResult } from '../actions';
+import { echo, postEntry, rePostResult,
+  fetchAll, fetchOne
+} from '../actions';
 
 const reducer = handleActions({
   [echo]: (state, action) => {
@@ -16,10 +18,22 @@ const reducer = handleActions({
     return Object.assign({}, state, {
       postResult: action.payload
     });
+  },
+  [fetchAll]: (state, action) => {
+    return Object.assign({}, state, {
+      entries: action.payload
+    });
+  },
+  [fetchOne]: (state, action) => {
+    return Object.assign({}, state, {
+      entry: action.payload
+    });
   }
 }, {
   echoMsg: '',
-  postResult: null
+  postResult: null,
+  entries: [],
+  entry: null
 });
 
 export default reducer;
