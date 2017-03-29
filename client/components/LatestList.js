@@ -15,19 +15,27 @@ const LatestList = (() => {
       </li>
     );
   };
-  let init = false;
-  const Container = ({ls, onRead, onLinkClick}) => {
-    if (!init) {
-      onRead();
-      init = true;
+  class Items extends React.Component {
+    constructor(props) {
+      super(props);
     }
-    let node = ls.map((item, idx) => {
-      return (<Item key={idx} item={item} click={onLinkClick} />);
-    });
+    componentWillMount() {
+      this.props.handleRead();
+    }
+    render() {
+      const node = this.props.ls.map((item, idx) => {
+        return (<Item key={idx} item={item} click={this.props.handleClick} />);
+      });
+      return (
+        <ul>{node}</ul>
+      );
+    }
+  }
+  const Container = ({ls, onRead, onLinkClick}) => {
     return (
       <div>
         <h4>latest entries</h4>
-        <ul>{node}</ul>
+        <Items ls={ls} handleRead={onRead} handleClick={onLinkClick} />
       </div>
     );
   };

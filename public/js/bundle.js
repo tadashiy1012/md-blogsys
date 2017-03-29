@@ -330,6 +330,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
@@ -341,6 +343,12 @@ var _reactRouterRedux = require('react-router-redux');
 var _actions = require('../actions');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var LatestList = function () {
   var Item = function Item(_ref) {
@@ -361,19 +369,45 @@ var LatestList = function () {
       )
     );
   };
-  var init = false;
+
+  var Items = function (_React$Component) {
+    _inherits(Items, _React$Component);
+
+    function Items(props) {
+      _classCallCheck(this, Items);
+
+      return _possibleConstructorReturn(this, (Items.__proto__ || Object.getPrototypeOf(Items)).call(this, props));
+    }
+
+    _createClass(Items, [{
+      key: 'componentWillMount',
+      value: function componentWillMount() {
+        this.props.handleRead();
+      }
+    }, {
+      key: 'render',
+      value: function render() {
+        var _this2 = this;
+
+        var node = this.props.ls.map(function (item, idx) {
+          return _react2.default.createElement(Item, { key: idx, item: item, click: _this2.props.handleClick });
+        });
+        return _react2.default.createElement(
+          'ul',
+          null,
+          node
+        );
+      }
+    }]);
+
+    return Items;
+  }(_react2.default.Component);
+
   var Container = function Container(_ref2) {
     var ls = _ref2.ls,
         onRead = _ref2.onRead,
         onLinkClick = _ref2.onLinkClick;
 
-    if (!init) {
-      onRead();
-      init = true;
-    }
-    var node = ls.map(function (item, idx) {
-      return _react2.default.createElement(Item, { key: idx, item: item, click: onLinkClick });
-    });
     return _react2.default.createElement(
       'div',
       null,
@@ -382,11 +416,7 @@ var LatestList = function () {
         null,
         'latest entries'
       ),
-      _react2.default.createElement(
-        'ul',
-        null,
-        node
-      )
+      _react2.default.createElement(Items, { ls: ls, handleRead: onRead, handleClick: onLinkClick })
     );
   };
   return (0, _reactRedux.connect)(function (state, props) {
