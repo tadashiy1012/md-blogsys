@@ -18,8 +18,8 @@ const EntryService = (() => {
       const q = 'SELECT * FROM `entry` ORDER BY `entry`.`id` DESC LIMIT 0, 10;';
       return this.dbService.execQuery(q);
     }
-    range(start, end) {
-      const q = 'select * from entry order by id desc limit ' + start + ', ' + end + ';';
+    range(start, num) {
+      const q = 'select * from entry order by id desc limit ' + start + ', ' + num + ';';
       return this.dbService.execQuery(q);
     }
     find(tgtId) {
