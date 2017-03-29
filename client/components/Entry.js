@@ -26,6 +26,7 @@ const Entry = (() => {
         <div><h3>{entry.title}</h3></div>
         <div><ReactMarkdown source={entry.body} /></div>
         <div><DateItem dt={entry.date} /></div>
+        <hr />
       </div>
     );
   };
