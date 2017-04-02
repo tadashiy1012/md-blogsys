@@ -4,7 +4,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.fetchOne = exports.fetchAll = exports.rePostResult = exports.postEntry = exports.echo = undefined;
+exports.select = exports.fetchOne = exports.fetchAll = exports.rePostResult = exports.postEntry = exports.echo = undefined;
 
 var _reduxActions = require('redux-actions');
 
@@ -130,6 +130,7 @@ var fetchOne = exports.fetchOne = (0, _reduxActions.createAction)('FETCH_ONE', f
     return _ref3.apply(this, arguments);
   };
 }());
+var select = exports.select = (0, _reduxActions.createAction)('SELECT');
 
 },{"redux-actions":733,"superagent":805}],2:[function(require,module,exports){
 'use strict';
@@ -240,11 +241,20 @@ var EntriesContents = function () {
     }, {
       key: 'render',
       value: function render() {
+        var _this2 = this;
+
         var node = this.props.entries.map(function (item, idx) {
           return _react2.default.createElement(
             'li',
             { key: idx },
-            item.title
+            _react2.default.createElement(
+              'a',
+              { href: '#', onClick: function onClick(e) {
+                  e.preventDefault();
+                  _this2.props.handleSelect(item);
+                } },
+              item.title
+            )
           );
         });
         return _react2.default.createElement(
@@ -258,30 +268,90 @@ var EntriesContents = function () {
     return Entries;
   }(_react2.default.Component);
 
+  var Edit = function (_React$Component2) {
+    _inherits(Edit, _React$Component2);
+
+    function Edit() {
+      _classCallCheck(this, Edit);
+
+      return _possibleConstructorReturn(this, (Edit.__proto__ || Object.getPrototypeOf(Edit)).apply(this, arguments));
+    }
+
+    _createClass(Edit, [{
+      key: 'render',
+      value: function render() {
+        var node = null;
+        if (this.props.tgtItem) {
+          node = _react2.default.createElement(
+            'div',
+            null,
+            _react2.default.createElement(
+              'p',
+              null,
+              this.props.tgtItem.title
+            ),
+            _react2.default.createElement(
+              'p',
+              null,
+              this.props.tgtItem.body
+            )
+          );
+        }
+        return _react2.default.createElement(
+          'div',
+          null,
+          node
+        );
+      }
+    }]);
+
+    return Edit;
+  }(_react2.default.Component);
+
   var Container = function Container(_ref) {
     var entries = _ref.entries,
-        handleFetch = _ref.handleFetch;
+        selected = _ref.selected,
+        handleFetch = _ref.handleFetch,
+        handleSelect = _ref.handleSelect;
 
     return _react2.default.createElement(
       'div',
-      null,
+      { style: { display: 'flex' } },
       _react2.default.createElement(
-        'h3',
-        null,
-        'entries'
+        'div',
+        { style: { width: '360px' } },
+        _react2.default.createElement(
+          'h3',
+          null,
+          'entries'
+        ),
+        _react2.default.createElement(Entries, { entries: entries, handleFetch: handleFetch, handleSelect: handleSelect })
       ),
-      _react2.default.createElement(Entries, { entries: entries, handleFetch: handleFetch })
+      _react2.default.createElement(
+        'div',
+        { style: { width: '100%' } },
+        _react2.default.createElement(
+          'h3',
+          null,
+          'edit'
+        ),
+        _react2.default.createElement(Edit, { tgtItem: selected })
+      )
     );
   };
   return (0, _reactRedux.connect)(function (state, props) {
     console.log(state);
     return {
-      entries: state.reducer.entries
+      entries: state.reducer.entries,
+      selected: state.reducer.selected
     };
   }, function (dispatch) {
     return {
       handleFetch: function handleFetch() {
         dispatch((0, _actions.fetchAll)());
+      },
+      handleSelect: function handleSelect(item) {
+        dispatch((0, _actions.select)(item));
       }
     };
   })(Container);
@@ -806,11 +876,16 @@ var reducer = (0, _reduxActions.handleActions)((_handleActions = {}, _defineProp
   return Object.assign({}, state, {
     entry: action.payload
   });
+}), _defineProperty(_handleActions, _actions.select, function (state, action) {
+  return Object.assign({}, state, {
+    selected: action.payload
+  });
 }), _handleActions), {
   echoMsg: '',
   postResult: null,
   entries: [],
-  entry: null
+  entry: null,
+  selected: null
 });
 
 exports.default = reducer;

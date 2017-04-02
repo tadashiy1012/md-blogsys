@@ -55,3 +55,4 @@ export const fetchOne = createAction('FETCH_ONE', async (id) => {
   const result = await execFetchOne(id);
   return result;
 });
+export const select = createAction('SELECT');
