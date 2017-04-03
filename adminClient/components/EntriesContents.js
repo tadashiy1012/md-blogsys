@@ -23,14 +23,25 @@ const EntriesContents = (() => {
       );
     }
   }
+  const EditForm = ({title, body}) => {
+    return (
+      <div>
+        <label>title</label><br />
+        <input type='text' value={title} style={{width: '100%'}} />
+        <br />
+        <label>body</label><br />
+        <textarea value={body} style={{width: '100%'}} rows='5'></textarea>
+      </div>
+    );
+  };
   class Edit extends React.Component {
     render() {
       let node = null;
       if (this.props.tgtItem) {
-        node = (<div>
-          <p>{this.props.tgtItem.title}</p>
-          <p>{this.props.tgtItem.body}</p>
-        </div>);
+        node = (<EditForm
+          title={this.props.tgtItem.title}
+          body={this.props.tgtItem.body}
+        />);
       }
       return (
         <div>

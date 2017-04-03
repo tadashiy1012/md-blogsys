@@ -268,6 +268,31 @@ var EntriesContents = function () {
     return Entries;
   }(_react2.default.Component);
 
+  var EditForm = function EditForm(_ref) {
+    var title = _ref.title,
+        body = _ref.body;
+
+    return _react2.default.createElement(
+      'div',
+      null,
+      _react2.default.createElement(
+        'label',
+        null,
+        'title'
+      ),
+      _react2.default.createElement('br', null),
+      _react2.default.createElement('input', { type: 'text', value: title, style: { width: '100%' } }),
+      _react2.default.createElement('br', null),
+      _react2.default.createElement(
+        'label',
+        null,
+        'body'
+      ),
+      _react2.default.createElement('br', null),
+      _react2.default.createElement('textarea', { value: body, style: { width: '100%' }, rows: '5' })
+    );
+  };
+
   var Edit = function (_React$Component2) {
     _inherits(Edit, _React$Component2);
 
@@ -282,20 +307,10 @@ var EntriesContents = function () {
       value: function render() {
         var node = null;
         if (this.props.tgtItem) {
-          node = _react2.default.createElement(
-            'div',
-            null,
-            _react2.default.createElement(
-              'p',
-              null,
-              this.props.tgtItem.title
-            ),
-            _react2.default.createElement(
-              'p',
-              null,
-              this.props.tgtItem.body
-            )
-          );
+          node = _react2.default.createElement(EditForm, {
+            title: this.props.tgtItem.title,
+            body: this.props.tgtItem.body
+          });
         }
         return _react2.default.createElement(
           'div',
@@ -308,11 +323,11 @@ var EntriesContents = function () {
     return Edit;
   }(_react2.default.Component);
 
-  var Container = function Container(_ref) {
-    var entries = _ref.entries,
-        selected = _ref.selected,
-        handleFetch = _ref.handleFetch,
-        handleSelect = _ref.handleSelect;
+  var Container = function Container(_ref2) {
+    var entries = _ref2.entries,
+        selected = _ref2.selected,
+        handleFetch = _ref2.handleFetch,
+        handleSelect = _ref2.handleSelect;
 
     return _react2.default.createElement(
       'div',
