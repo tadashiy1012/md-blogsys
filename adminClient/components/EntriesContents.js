@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import {} from 'react-router-redux';
-import { fetchAll, select, editForm } from '../actions';
+import { fetchAll, select, editForm, updateEntry } from '../actions';
 
 const EntriesContents = (() => {
   class Entries extends React.Component {
@@ -60,11 +60,21 @@ const EntriesContents = (() => {
             body={this.props.editValues.body}
             handleEdit={this.props.handleEdit}
           />
+          <button onClick={() => {
+            const id = this.props.tgtItem.id;
+            const title = this.props.editValues.title;
+            const body = this.props.editValues.body;
+            this.props.handleUpdate(id, title, body);  
+          }}>update entry</button>
+          <br />
+          <button>delete entry</button>
         </div>
       );
     }
   }
-  const Container = ({entries, selected, editValues, handleFetch, handleSelect, handleEdit}) => {
+  const Container = ({
+      entries, selected, editValues, updateResult,
+      handleFetch, handleSelect, handleEdit, handleUpdate}) => {
     return (
       <div style={{display:'flex'}}>
         <div style={{width:'360px'}}>
@@ -73,7 +83,7 @@ const EntriesContents = (() => {
         </div>
         <div style={{width:'100%'}}>
           <h3>edit</h3>
-          <Edit tgtItem={selected} editValues={editValues} handleEdit={handleEdit} />
+          <Edit tgtItem={selected} editValues={editValues} handleEdit={handleEdit} handleUpdate={handleUpdate} />
         </div>
       </div>
     );
@@ -83,7 +93,8 @@ const EntriesContents = (() => {
     return {
       entries: state.reducer.entries,
       selected: state.reducer.selected,
-      editValues: state.reducer.editForm
+      editValues: state.reducer.editForm,
+      updateResult: state.reducer.updateResult
     };
   }, (dispatch) => {
     return {
@@ -95,6 +106,9 @@ const EntriesContents = (() => {
       },
       handleEdit: (values) => {
         dispatch(editForm(values));
+      },
+      handleUpdate: (id, title, body) => {
+        dispatch(updateEntry(id, title, body))
       }
     };
   })(Container);

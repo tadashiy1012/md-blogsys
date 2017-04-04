@@ -16,6 +16,20 @@ const execPost = (title, body) => {
       })
   });
 };
+const execPut = (id, title, body) => {
+  return new Promise((resolve, reject) => {
+    const url = '/admin/entry/' + id;
+    request.put(url)
+      .send({title: title, body: body})
+      .set('Accept', 'application/json')
+      .end((err, res) => {
+        if (err) { reject(err); }
+        else {
+          resolve(JSON.parse(res.text));
+        }
+      });
+  });
+};
 const execFetchAll = () => {
   return new Promise((resolve, reject) => {
     const url = '/admin/entries';
@@ -57,3 +71,7 @@ export const fetchOne = createAction('FETCH_ONE', async (id) => {
 });
 export const select = createAction('SELECT');
 export const editForm = createAction('EDIT_FORM');
+export const updateEntry = createAction('UPDATE_ENTRY', async (id, title, body) => {
+  const result = await execPut(id, title, body);
+  return result;
+});

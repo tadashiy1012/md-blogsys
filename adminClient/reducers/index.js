@@ -1,6 +1,7 @@
 import { handleAction, handleActions } from 'redux-actions';
 import { echo, postEntry, rePostResult,
-  fetchAll, fetchOne, select, editForm
+  fetchAll, fetchOne, select, editForm,
+  updateEntry
 } from '../actions';
 
 const reducer = handleActions({
@@ -38,10 +39,16 @@ const reducer = handleActions({
     return Object.assign({}, state, {
       editForm: action.payload
     });
+  },
+  [updateEntry]: (state, action) => {
+    return Object.assign({}, state, {
+      updateResult: action.payload
+    });
   }
 }, {
   echoMsg: '',
   postResult: null,
+  updateResult: null,
   entries: [],
   entry: null,
   selected: null,

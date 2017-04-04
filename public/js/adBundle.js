@@ -4,7 +4,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.editForm = exports.select = exports.fetchOne = exports.fetchAll = exports.rePostResult = exports.postEntry = exports.echo = undefined;
+exports.updateEntry = exports.editForm = exports.select = exports.fetchOne = exports.fetchAll = exports.rePostResult = exports.postEntry = exports.echo = undefined;
 
 var _reduxActions = require('redux-actions');
 
@@ -25,6 +25,18 @@ var execPost = function execPost(title, body) {
       } else {
         var obj = JSON.parse(res.text);
         resolve(obj);
+      }
+    });
+  });
+};
+var execPut = function execPut(id, title, body) {
+  return new Promise(function (resolve, reject) {
+    var url = '/admin/entry/' + id;
+    _superagent2.default.put(url).send({ title: title, body: body }).set('Accept', 'application/json').end(function (err, res) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(JSON.parse(res.text));
       }
     });
   });
@@ -132,6 +144,32 @@ var fetchOne = exports.fetchOne = (0, _reduxActions.createAction)('FETCH_ONE', f
 }());
 var select = exports.select = (0, _reduxActions.createAction)('SELECT');
 var editForm = exports.editForm = (0, _reduxActions.createAction)('EDIT_FORM');
+var updateEntry = exports.updateEntry = (0, _reduxActions.createAction)('UPDATE_ENTRY', function () {
+  var _ref4 = _asyncToGenerator(regeneratorRuntime.mark(function _callee4(id, title, body) {
+    var result;
+    return regeneratorRuntime.wrap(function _callee4$(_context4) {
+      while (1) {
+        switch (_context4.prev = _context4.next) {
+          case 0:
+            _context4.next = 2;
+            return execPut(id, title, body);
+
+          case 2:
+            result = _context4.sent;
+            return _context4.abrupt('return', result);
+
+          case 4:
+          case 'end':
+            return _context4.stop();
+        }
+      }
+    }, _callee4, undefined);
+  }));
+
+  return function (_x4, _x5, _x6) {
+    return _ref4.apply(this, arguments);
+  };
+}());
 
 },{"redux-actions":733,"superagent":805}],2:[function(require,module,exports){
 'use strict';
@@ -318,13 +356,16 @@ var EntriesContents = function () {
       key: 'componentWillReceiveProps',
       value: function componentWillReceiveProps(nextProps) {
         if (this.props.tgtItem !== nextProps.tgtItem) {
-          console.log('not match!');
-          this.props.handleEdit({ title: nextProps.tgtItem.title, body: nextProps.tgtItem.body });
+          this.props.handleEdit({
+            title: nextProps.tgtItem.title,
+            body: nextProps.tgtItem.body });
         }
       }
     }, {
       key: 'render',
       value: function render() {
+        var _this4 = this;
+
         return _react2.default.createElement(
           'div',
           null,
@@ -332,7 +373,23 @@ var EntriesContents = function () {
             title: this.props.editValues.title,
             body: this.props.editValues.body,
             handleEdit: this.props.handleEdit
-          })
+          }),
+          _react2.default.createElement(
+            'button',
+            { onClick: function onClick() {
+                var id = _this4.props.tgtItem.id;
+                var title = _this4.props.editValues.title;
+                var body = _this4.props.editValues.body;
+                _this4.props.handleUpdate(id, title, body);
+              } },
+            'update entry'
+          ),
+          _react2.default.createElement('br', null),
+          _react2.default.createElement(
+            'button',
+            null,
+            'delete entry'
+          )
         );
       }
     }]);
@@ -344,9 +401,11 @@ var EntriesContents = function () {
     var entries = _ref2.entries,
         selected = _ref2.selected,
         editValues = _ref2.editValues,
+        updateResult = _ref2.updateResult,
         handleFetch = _ref2.handleFetch,
         handleSelect = _ref2.handleSelect,
-        handleEdit = _ref2.handleEdit;
+        handleEdit = _ref2.handleEdit,
+        handleUpdate = _ref2.handleUpdate;
 
     return _react2.default.createElement(
       'div',
@@ -369,7 +428,7 @@ var EntriesContents = function () {
           null,
           'edit'
         ),
-        _react2.default.createElement(Edit, { tgtItem: selected, editValues: editValues, handleEdit: handleEdit })
+        _react2.default.createElement(Edit, { tgtItem: selected, editValues: editValues, handleEdit: handleEdit, handleUpdate: handleUpdate })
       )
     );
   };
@@ -378,7 +437,8 @@ var EntriesContents = function () {
     return {
       entries: state.reducer.entries,
       selected: state.reducer.selected,
-      editValues: state.reducer.editForm
+      editValues: state.reducer.editForm,
+      updateResult: state.reducer.updateResult
     };
   }, function (dispatch) {
     return {
@@ -390,6 +450,9 @@ var EntriesContents = function () {
       },
       handleEdit: function handleEdit(values) {
         dispatch((0, _actions.editForm)(values));
+      },
+      handleUpdate: function handleUpdate(id, title, body) {
+        dispatch((0, _actions.updateEntry)(id, title, body));
       }
     };
   })(Container);
@@ -922,9 +985,14 @@ var reducer = (0, _reduxActions.handleActions)((_handleActions = {}, _defineProp
   return Object.assign({}, state, {
     editForm: action.payload
   });
+}), _defineProperty(_handleActions, _actions.updateEntry, function (state, action) {
+  return Object.assign({}, state, {
+    updateResult: action.payload
+  });
 }), _handleActions), {
   echoMsg: '',
   postResult: null,
+  updateResult: null,
   entries: [],
   entry: null,
   selected: null,
