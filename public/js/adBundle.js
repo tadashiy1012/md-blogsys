@@ -4,7 +4,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.select = exports.fetchOne = exports.fetchAll = exports.rePostResult = exports.postEntry = exports.echo = undefined;
+exports.editForm = exports.select = exports.fetchOne = exports.fetchAll = exports.rePostResult = exports.postEntry = exports.echo = undefined;
 
 var _reduxActions = require('redux-actions');
 
@@ -131,6 +131,7 @@ var fetchOne = exports.fetchOne = (0, _reduxActions.createAction)('FETCH_ONE', f
   };
 }());
 var select = exports.select = (0, _reduxActions.createAction)('SELECT');
+var editForm = exports.editForm = (0, _reduxActions.createAction)('EDIT_FORM');
 
 },{"redux-actions":733,"superagent":805}],2:[function(require,module,exports){
 'use strict';
@@ -270,8 +271,13 @@ var EntriesContents = function () {
 
   var EditForm = function EditForm(_ref) {
     var title = _ref.title,
-        body = _ref.body;
+        body = _ref.body,
+        handleEdit = _ref.handleEdit;
 
+    var values = {
+      title: title,
+      body: body
+    };
     return _react2.default.createElement(
       'div',
       null,
@@ -281,7 +287,10 @@ var EntriesContents = function () {
         'title'
       ),
       _react2.default.createElement('br', null),
-      _react2.default.createElement('input', { type: 'text', value: title, style: { width: '100%' } }),
+      _react2.default.createElement('input', { type: 'text', value: title, style: { width: '100%' }, onChange: function onChange(e) {
+          values.title = e.target.value;
+          handleEdit(values);
+        } }),
       _react2.default.createElement('br', null),
       _react2.default.createElement(
         'label',
@@ -289,7 +298,10 @@ var EntriesContents = function () {
         'body'
       ),
       _react2.default.createElement('br', null),
-      _react2.default.createElement('textarea', { value: body, style: { width: '100%' }, rows: '5' })
+      _react2.default.createElement('textarea', { value: body, style: { width: '100%' }, rows: '5', onChange: function onChange(e) {
+          values.body = e.target.value;
+          handleEdit(values);
+        } })
     );
   };
 
@@ -303,19 +315,24 @@ var EntriesContents = function () {
     }
 
     _createClass(Edit, [{
+      key: 'componentWillReceiveProps',
+      value: function componentWillReceiveProps(nextProps) {
+        if (this.props.tgtItem !== nextProps.tgtItem) {
+          console.log('not match!');
+          this.props.handleEdit({ title: nextProps.tgtItem.title, body: nextProps.tgtItem.body });
+        }
+      }
+    }, {
       key: 'render',
       value: function render() {
-        var node = null;
-        if (this.props.tgtItem) {
-          node = _react2.default.createElement(EditForm, {
-            title: this.props.tgtItem.title,
-            body: this.props.tgtItem.body
-          });
-        }
         return _react2.default.createElement(
           'div',
           null,
-          node
+          _react2.default.createElement(EditForm, {
+            title: this.props.editValues.title,
+            body: this.props.editValues.body,
+            handleEdit: this.props.handleEdit
+          })
         );
       }
     }]);
@@ -326,8 +343,10 @@ var EntriesContents = function () {
   var Container = function Container(_ref2) {
     var entries = _ref2.entries,
         selected = _ref2.selected,
+        editValues = _ref2.editValues,
         handleFetch = _ref2.handleFetch,
-        handleSelect = _ref2.handleSelect;
+        handleSelect = _ref2.handleSelect,
+        handleEdit = _ref2.handleEdit;
 
     return _react2.default.createElement(
       'div',
@@ -350,7 +369,7 @@ var EntriesContents = function () {
           null,
           'edit'
         ),
-        _react2.default.createElement(Edit, { tgtItem: selected })
+        _react2.default.createElement(Edit, { tgtItem: selected, editValues: editValues, handleEdit: handleEdit })
       )
     );
   };
@@ -358,7 +377,8 @@ var EntriesContents = function () {
     console.log(state);
     return {
       entries: state.reducer.entries,
-      selected: state.reducer.selected
+      selected: state.reducer.selected,
+      editValues: state.reducer.editForm
     };
   }, function (dispatch) {
     return {
@@ -367,6 +387,9 @@ var EntriesContents = function () {
       },
       handleSelect: function handleSelect(item) {
         dispatch((0, _actions.select)(item));
+      },
+      handleEdit: function handleEdit(values) {
+        dispatch((0, _actions.editForm)(values));
       }
     };
   })(Container);
@@ -895,12 +918,17 @@ var reducer = (0, _reduxActions.handleActions)((_handleActions = {}, _defineProp
   return Object.assign({}, state, {
     selected: action.payload
   });
+}), _defineProperty(_handleActions, _actions.editForm, function (state, action) {
+  return Object.assign({}, state, {
+    editForm: action.payload
+  });
 }), _handleActions), {
   echoMsg: '',
   postResult: null,
   entries: [],
   entry: null,
-  selected: null
+  selected: null,
+  editForm: { title: '', body: '' }
 });
 
 exports.default = reducer;

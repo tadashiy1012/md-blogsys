@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import {} from 'react-router-redux';
-import { fetchAll, select } from '../actions';
+import { fetchAll, select, editForm } from '../actions';
 
 const EntriesContents = (() => {
   class Entries extends React.Component {
@@ -23,34 +23,48 @@ const EntriesContents = (() => {
       );
     }
   }
-  const EditForm = ({title, body}) => {
+  const EditForm = ({title, body, handleEdit}) => {
+    let values = {
+      title: title,
+      body: body
+    };
     return (
       <div>
         <label>title</label><br />
-        <input type='text' value={title} style={{width: '100%'}} />
+        <input type='text' value={title} style={{width: '100%'}} onChange={(e) => {
+          values.title = e.target.value;
+          handleEdit(values);
+        }} />
         <br />
         <label>body</label><br />
-        <textarea value={body} style={{width: '100%'}} rows='5'></textarea>
+        <textarea value={body} style={{width: '100%'}} rows='5' onChange={(e) => {
+          values.body = e.target.value;
+          handleEdit(values);
+        }} ></textarea>
       </div>
     );
   };
   class Edit extends React.Component {
-    render() {
-      let node = null;
-      if (this.props.tgtItem) {
-        node = (<EditForm
-          title={this.props.tgtItem.title}
-          body={this.props.tgtItem.body}
-        />);
+    componentWillReceiveProps(nextProps) {
+      if (this.props.tgtItem !== nextProps.tgtItem) {
+        this.props.handleEdit({
+          title: nextProps.tgtItem.title, 
+          body: nextProps.tgtItem.body});
       }
+    }
+    render() {
       return (
         <div>
-          {node}
+          <EditForm
+            title={this.props.editValues.title}
+            body={this.props.editValues.body}
+            handleEdit={this.props.handleEdit}
+          />
         </div>
       );
     }
   }
-  const Container = ({entries, selected, handleFetch, handleSelect}) => {
+  const Container = ({entries, selected, editValues, handleFetch, handleSelect, handleEdit}) => {
     return (
       <div style={{display:'flex'}}>
         <div style={{width:'360px'}}>
@@ -59,7 +73,7 @@ const EntriesContents = (() => {
         </div>
         <div style={{width:'100%'}}>
           <h3>edit</h3>
-          <Edit tgtItem={selected} />
+          <Edit tgtItem={selected} editValues={editValues} handleEdit={handleEdit} />
         </div>
       </div>
     );
@@ -68,7 +82,8 @@ const EntriesContents = (() => {
     console.log(state);
     return {
       entries: state.reducer.entries,
-      selected: state.reducer.selected
+      selected: state.reducer.selected,
+      editValues: state.reducer.editForm
     };
   }, (dispatch) => {
     return {
@@ -77,6 +92,9 @@ const EntriesContents = (() => {
       },
       handleSelect: (item) => {
         dispatch(select(item));
+      },
+      handleEdit: (values) => {
+        dispatch(editForm(values));
       }
     };
   })(Container);

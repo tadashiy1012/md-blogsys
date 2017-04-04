@@ -56,3 +56,4 @@ export const fetchOne = createAction('FETCH_ONE', async (id) => {
   return result;
 });
 export const select = createAction('SELECT');
+export const editForm = createAction('EDIT_FORM');
