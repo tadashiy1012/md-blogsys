@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import {} from 'react-router-redux';
-import { fetchAll, select, editForm, updateEntry } from '../actions';
+import { fetchAll, select, editForm, updateEntry, delEntry } from '../actions';
 
 const EntriesContents = (() => {
   class Entries extends React.Component {
@@ -67,14 +67,17 @@ const EntriesContents = (() => {
             this.props.handleUpdate(id, title, body);  
           }}>update entry</button>
           <br />
-          <button>delete entry</button>
+          <button onClick={() => {
+            const id = this.props.tgtItem.id;
+            this.props.handleDel(id);
+          }}>delete entry</button>
         </div>
       );
     }
   }
   const Container = ({
-      entries, selected, editValues, updateResult,
-      handleFetch, handleSelect, handleEdit, handleUpdate}) => {
+      entries, selected, editValues, updateResult, delResult,
+      handleFetch, handleSelect, handleEdit, handleUpdate, handleDel}) => {
     return (
       <div style={{display:'flex'}}>
         <div style={{width:'360px'}}>
@@ -83,7 +86,11 @@ const EntriesContents = (() => {
         </div>
         <div style={{width:'100%'}}>
           <h3>edit</h3>
-          <Edit tgtItem={selected} editValues={editValues} handleEdit={handleEdit} handleUpdate={handleUpdate} />
+          <Edit tgtItem={selected} 
+            editValues={editValues}
+            handleEdit={handleEdit}
+            handleUpdate={handleUpdate}
+            handleDel={handleDel} />
         </div>
       </div>
     );
@@ -94,7 +101,8 @@ const EntriesContents = (() => {
       entries: state.reducer.entries,
       selected: state.reducer.selected,
       editValues: state.reducer.editForm,
-      updateResult: state.reducer.updateResult
+      updateResult: state.reducer.updateResult,
+      delResult: state.reducer.delResult
     };
   }, (dispatch) => {
     return {
@@ -108,7 +116,10 @@ const EntriesContents = (() => {
         dispatch(editForm(values));
       },
       handleUpdate: (id, title, body) => {
-        dispatch(updateEntry(id, title, body))
+        dispatch(updateEntry(id, title, body));
+      },
+      handleDel: (id) => {
+        dispatch(delEntry(id));
       }
     };
   })(Container);

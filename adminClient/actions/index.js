@@ -54,6 +54,17 @@ const execFetchOne = (tgtId) => {
     });
   });
 };
+const execDelete = (tgtId) => {
+  return new Promise((resolve, reject) => {
+    const url = '/admin/entry/' + tgtId;
+    request.del(url).end((err, res) => {
+      if (err) { reject(err); }
+      else {
+        resolve(JSON.parse(res.text));
+      }
+    });
+  });
+};
 
 export const echo = createAction('ECHO');
 export const postEntry = createAction('POST_ENTRY', async (title, body) => {
@@ -73,5 +84,9 @@ export const select = createAction('SELECT');
 export const editForm = createAction('EDIT_FORM');
 export const updateEntry = createAction('UPDATE_ENTRY', async (id, title, body) => {
   const result = await execPut(id, title, body);
+  return result;
+});
+export const delEntry = createAction('DEL_ENTRY', async (id) => {
+  const result = await execDelete(id);
   return result;
 });
