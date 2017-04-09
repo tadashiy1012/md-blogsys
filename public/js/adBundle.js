@@ -665,8 +665,50 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var WriteContents = function () {
-  var WriteForm = function (_React$Component) {
-    _inherits(WriteForm, _React$Component);
+  var ResultMessage = function (_React$Component) {
+    _inherits(ResultMessage, _React$Component);
+
+    function ResultMessage(props) {
+      _classCallCheck(this, ResultMessage);
+
+      var _this = _possibleConstructorReturn(this, (ResultMessage.__proto__ || Object.getPrototypeOf(ResultMessage)).call(this, props));
+
+      _this.successMessage = 'post success!';
+      _this.failMessage = 'post failed!';
+      _this.style = {
+        textAlign: 'center',
+        width: '100%',
+        padding: '8px 0px'
+      };
+      _this.successStyle = {
+        border: 'solid 2px green'
+      };
+      _this.failStyle = {
+        border: 'solid 2px red'
+      };
+      _this.state = {
+        toggle: props.toggle
+      };
+      return _this;
+    }
+
+    _createClass(ResultMessage, [{
+      key: 'render',
+      value: function render() {
+        var style = Object.assign({}, this.style, this.state.toggle ? this.successStyle : this.failStyle);
+        return _react2.default.createElement(
+          'div',
+          { style: style },
+          this.state.toggle ? this.successMessage : this.failMessage
+        );
+      }
+    }]);
+
+    return ResultMessage;
+  }(_react2.default.Component);
+
+  var WriteForm = function (_React$Component2) {
+    _inherits(WriteForm, _React$Component2);
 
     function WriteForm(props) {
       _classCallCheck(this, WriteForm);
@@ -677,7 +719,7 @@ var WriteContents = function () {
     _createClass(WriteForm, [{
       key: 'render',
       value: function render() {
-        var _this2 = this;
+        var _this3 = this;
 
         return _react2.default.createElement(
           'div',
@@ -689,7 +731,7 @@ var WriteContents = function () {
           ),
           _react2.default.createElement('br', null),
           _react2.default.createElement('input', { type: 'text', value: this.props.inTitle, style: { width: '100%' }, onChange: function onChange(e) {
-              _this2.props.handleEdit({ title: e.target.value, body: _this2.props.inBody });
+              _this3.props.handleEdit({ title: e.target.value, body: _this3.props.inBody });
             } }),
           _react2.default.createElement('br', null),
           _react2.default.createElement(
@@ -699,7 +741,7 @@ var WriteContents = function () {
           ),
           _react2.default.createElement('br', null),
           _react2.default.createElement('textarea', { value: this.props.inBody, style: { width: '100%' }, rows: '5', onChange: function onChange(e) {
-              _this2.props.handleEdit({ title: _this2.props.inTitle, body: e.target.value });
+              _this3.props.handleEdit({ title: _this3.props.inTitle, body: e.target.value });
             } })
         );
       }
@@ -708,40 +750,36 @@ var WriteContents = function () {
     return WriteForm;
   }(_react2.default.Component);
 
-  var FormRoot = function (_React$Component2) {
-    _inherits(FormRoot, _React$Component2);
+  var FormRoot = function (_React$Component3) {
+    _inherits(FormRoot, _React$Component3);
 
     function FormRoot(props) {
       _classCallCheck(this, FormRoot);
 
-      var _this3 = _possibleConstructorReturn(this, (FormRoot.__proto__ || Object.getPrototypeOf(FormRoot)).call(this, props));
+      var _this4 = _possibleConstructorReturn(this, (FormRoot.__proto__ || Object.getPrototypeOf(FormRoot)).call(this, props));
 
-      _this3.state = {
-        inTitle: 'no title',
-        inBody: 'no body'
+      _this4.state = {
+        inTitle: props.editValues.title,
+        inBody: props.editValues.body
       };
-      return _this3;
+      return _this4;
     }
 
     _createClass(FormRoot, [{
       key: 'componentWillMount',
       value: function componentWillMount() {
         this.props.handleRePResult();
-        this.setState({ inTitle: this.props.editValues.title });
-        this.setState({ inBody: this.props.editValues.body });
       }
     }, {
       key: 'componentWillReceiveProps',
       value: function componentWillReceiveProps(nextProps) {
-        console.log(this.props, nextProps);
         this.setState({ inTitle: nextProps.editValues.title });
         this.setState({ inBody: nextProps.editValues.body });
-        console.log(this.state);
       }
     }, {
       key: 'render',
       value: function render() {
-        var _this4 = this;
+        var _this5 = this;
 
         return _react2.default.createElement(
           'div',
@@ -764,7 +802,7 @@ var WriteContents = function () {
             'button',
             { onClick: function onClick(e) {
                 e.preventDefault();
-                _this4.props.handlePostEntry(_this4.state.inTitle, _this4.state.inBody);
+                _this5.props.handlePostEntry(_this5.state.inTitle, _this5.state.inBody);
               } },
             'submit'
           )
@@ -782,14 +820,14 @@ var WriteContents = function () {
         handleRePResult = _ref.handleRePResult,
         handleEdit = _ref.handleEdit;
 
-    console.log(editValues);
-    if (postResult) {
-      console.log(postResult);
-      if (postResult.status === 200) {
-        alert('post success!');
-      } else {
-        alert('post failed!');
-      }
+    var msg = null;
+    var flag = false;
+    if (postResult && postResult.status === 200) {
+      msg = _react2.default.createElement(ResultMessage, { toggle: true });
+    } else if (postResult && postResult.status !== 200) {
+      msg = _react2.default.createElement(ResultMessage, { toggle: false });
+    } else {
+      msg = null;
     }
     return _react2.default.createElement(
       'div',
@@ -799,8 +837,10 @@ var WriteContents = function () {
         null,
         'write'
       ),
+      msg,
       _react2.default.createElement(FormRoot, {
         editValues: editValues,
+        postResult: postResult,
         handleEdit: handleEdit,
         handleRePResult: handleRePResult,
         handlePostEntry: handlePostEntry })
@@ -815,13 +855,13 @@ var WriteContents = function () {
   }, function (dispatch) {
     return {
       handlePostEntry: function handlePostEntry(title, body) {
+        console.log(title, body);
         dispatch((0, _actions.postEntry)(title, body));
       },
       handleRePResult: function handleRePResult() {
         dispatch((0, _actions.rePostResult)(null));
       },
       handleEdit: function handleEdit(values) {
-        console.log(values);
         dispatch((0, _actions.editForm)(values));
       }
     };

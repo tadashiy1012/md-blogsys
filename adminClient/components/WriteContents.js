@@ -5,6 +5,35 @@ import ReactMarkdown from 'react-markdown';
 import { postEntry, rePostResult, editForm } from '../actions';
 
 const WriteContents = (() => {
+  class ResultMessage extends React.Component {
+    constructor(props) {
+      super(props);
+      this.successMessage = 'post success!';
+      this.failMessage = 'post failed!';
+      this.style = {
+        textAlign: 'center',
+        width: '100%',
+        padding: '8px 0px'
+      };
+      this.successStyle = {
+        border: 'solid 2px green'
+      };
+      this.failStyle = {
+        border: 'solid 2px red'
+      };
+      this.state = {
+        toggle: props.toggle
+      };
+    }
+    render() {
+      const style = Object.assign({}, this.style, this.state.toggle ? this.successStyle : this.failStyle);
+      return (
+        <div style={style}>
+          {this.state.toggle ? this.successMessage : this.failMessage}
+        </div>
+      );
+    }
+  }
   class WriteForm extends React.Component {
     constructor(props) {
       super(props);
@@ -29,20 +58,16 @@ const WriteContents = (() => {
     constructor(props) {
       super(props);
       this.state = {
-        inTitle: 'no title',
-        inBody: 'no body'
+        inTitle: props.editValues.title,
+        inBody: props.editValues.body
       };
     }
     componentWillMount() {
       this.props.handleRePResult();
-      this.setState({inTitle: this.props.editValues.title});
-      this.setState({inBody: this.props.editValues.body});
     }
     componentWillReceiveProps(nextProps) {
-      console.log(this.props, nextProps);
       this.setState({inTitle: nextProps.editValues.title});
       this.setState({inBody: nextProps.editValues.body});
-      console.log(this.state);
     }
     render() {
       return (
@@ -64,20 +89,22 @@ const WriteContents = (() => {
     }
   }
   const Container = ({editValues, postResult, handlePostEntry, handleRePResult, handleEdit}) => {
-    console.log(editValues);
-    if (postResult) {
-      console.log(postResult);
-      if (postResult.status === 200) {
-        alert('post success!');
-      } else {
-        alert('post failed!');
-      }
+    let msg = null;
+    let flag = false;
+    if (postResult && postResult.status === 200) {
+      msg = (<ResultMessage toggle={true} />);
+    } else if (postResult && postResult.status !== 200) {
+      msg = (<ResultMessage toggle={false} />);
+    } else {
+      msg = null;
     }
     return (
       <div>
         <h3>write</h3>
+        {msg}
         <FormRoot 
           editValues={editValues}
+          postResult={postResult}
           handleEdit={handleEdit}
           handleRePResult={handleRePResult}
           handlePostEntry={handlePostEntry} />       
@@ -93,13 +120,13 @@ const WriteContents = (() => {
   }, (dispatch) => {
     return {
       handlePostEntry: (title, body) => {
+        console.log(title, body);
         dispatch(postEntry(title, body));
       },
       handleRePResult: () => {
         dispatch(rePostResult(null));
       },
       handleEdit: (values) => {
-        console.log(values);
         dispatch(editForm(values));
       },
     };
