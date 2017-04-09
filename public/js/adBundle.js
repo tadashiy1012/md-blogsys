@@ -650,8 +650,6 @@ var _reactRedux = require('react-redux');
 
 require('react-router-redux');
 
-var _reduxForm = require('redux-form');
-
 var _reactMarkdown = require('react-markdown');
 
 var _reactMarkdown2 = _interopRequireDefault(_reactMarkdown);
@@ -666,48 +664,17 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-function _objectDestructuringEmpty(obj) { if (obj == null) throw new TypeError("Cannot destructure undefined"); }
-
 var WriteContents = function () {
-  var WriteForm = (0, _reduxForm.reduxForm)({ form: 'write' })(function (_ref) {
-    _objectDestructuringEmpty(_ref);
+  var WriteForm = function (_React$Component) {
+    _inherits(WriteForm, _React$Component);
 
-    return _react2.default.createElement(
-      'div',
-      null,
-      _react2.default.createElement(
-        'label',
-        null,
-        'input title'
-      ),
-      _react2.default.createElement('br', null),
-      _react2.default.createElement(_reduxForm.Field, { name: 'inTitle', component: 'input', type: 'text', style: { width: '100%' } }),
-      _react2.default.createElement('br', null),
-      _react2.default.createElement(
-        'label',
-        null,
-        'input body'
-      ),
-      _react2.default.createElement('br', null),
-      _react2.default.createElement(_reduxForm.Field, { name: 'inBody', component: 'textarea', type: 'text', style: { width: '100%', height: '130px' } })
-    );
-  });
+    function WriteForm(props) {
+      _classCallCheck(this, WriteForm);
 
-  var FormRoot = function (_React$Component) {
-    _inherits(FormRoot, _React$Component);
-
-    function FormRoot(props) {
-      _classCallCheck(this, FormRoot);
-
-      return _possibleConstructorReturn(this, (FormRoot.__proto__ || Object.getPrototypeOf(FormRoot)).call(this, props));
+      return _possibleConstructorReturn(this, (WriteForm.__proto__ || Object.getPrototypeOf(WriteForm)).call(this, props));
     }
 
-    _createClass(FormRoot, [{
-      key: 'componentWillMount',
-      value: function componentWillMount() {
-        this.props.handleRePResult();
-      }
-    }, {
+    _createClass(WriteForm, [{
       key: 'render',
       value: function render() {
         var _this2 = this;
@@ -715,7 +682,72 @@ var WriteContents = function () {
         return _react2.default.createElement(
           'div',
           null,
-          _react2.default.createElement(WriteForm, null),
+          _react2.default.createElement(
+            'label',
+            null,
+            'input title'
+          ),
+          _react2.default.createElement('br', null),
+          _react2.default.createElement('input', { type: 'text', value: this.props.inTitle, style: { width: '100%' }, onChange: function onChange(e) {
+              _this2.props.handleEdit({ title: e.target.value, body: _this2.props.inBody });
+            } }),
+          _react2.default.createElement('br', null),
+          _react2.default.createElement(
+            'label',
+            null,
+            'input body'
+          ),
+          _react2.default.createElement('br', null),
+          _react2.default.createElement('textarea', { value: this.props.inBody, style: { width: '100%' }, rows: '5', onChange: function onChange(e) {
+              _this2.props.handleEdit({ title: _this2.props.inTitle, body: e.target.value });
+            } })
+        );
+      }
+    }]);
+
+    return WriteForm;
+  }(_react2.default.Component);
+
+  var FormRoot = function (_React$Component2) {
+    _inherits(FormRoot, _React$Component2);
+
+    function FormRoot(props) {
+      _classCallCheck(this, FormRoot);
+
+      var _this3 = _possibleConstructorReturn(this, (FormRoot.__proto__ || Object.getPrototypeOf(FormRoot)).call(this, props));
+
+      _this3.state = {
+        inTitle: 'no title',
+        inBody: 'no body'
+      };
+      return _this3;
+    }
+
+    _createClass(FormRoot, [{
+      key: 'componentWillMount',
+      value: function componentWillMount() {
+        this.props.handleRePResult();
+        this.setState({ inTitle: this.props.editValues.title });
+        this.setState({ inBody: this.props.editValues.body });
+      }
+    }, {
+      key: 'componentWillReceiveProps',
+      value: function componentWillReceiveProps(nextProps) {
+        console.log(this.props, nextProps);
+        this.setState({ inTitle: nextProps.editValues.title });
+        this.setState({ inBody: nextProps.editValues.body });
+        console.log(this.state);
+      }
+    }, {
+      key: 'render',
+      value: function render() {
+        var _this4 = this;
+
+        return _react2.default.createElement(
+          'div',
+          null,
+          _react2.default.createElement(WriteForm, { handleEdit: this.props.handleEdit,
+            inTitle: this.state.inTitle, inBody: this.state.inBody }),
           _react2.default.createElement(
             'label',
             null,
@@ -725,14 +757,14 @@ var WriteContents = function () {
           _react2.default.createElement(
             'div',
             { style: { 'border': 'solid 1px #888' } },
-            _react2.default.createElement(_reactMarkdown2.default, { source: this.props.values.input })
+            _react2.default.createElement(_reactMarkdown2.default, { source: this.state.inBody })
           ),
           _react2.default.createElement('hr', null),
           _react2.default.createElement(
             'button',
             { onClick: function onClick(e) {
                 e.preventDefault();
-                _this2.props.handlePostEntry(_this2.props.values.inTitle, _this2.props.values.inBody);
+                _this4.props.handlePostEntry(_this4.state.inTitle, _this4.state.inBody);
               } },
             'submit'
           )
@@ -743,30 +775,14 @@ var WriteContents = function () {
     return FormRoot;
   }(_react2.default.Component);
 
-  var Container = function Container(_ref2) {
-    var formVal = _ref2.formVal,
-        postResult = _ref2.postResult,
-        handlePostEntry = _ref2.handlePostEntry,
-        handleRePResult = _ref2.handleRePResult;
+  var Container = function Container(_ref) {
+    var editValues = _ref.editValues,
+        postResult = _ref.postResult,
+        handlePostEntry = _ref.handlePostEntry,
+        handleRePResult = _ref.handleRePResult,
+        handleEdit = _ref.handleEdit;
 
-    var input = '';
-    var inTitle = 'no title';
-    var inBody = 'no body';
-    if (formVal.write) {
-      if (formVal.write.values && formVal.write.values.inBody) {
-        inBody = input = formVal.write.values.inBody;
-      }
-      if (formVal.write.values && formVal.write.values.inTitle) {
-        inTitle = formVal.write.values.inTitle;
-      }
-      if (input && (!formVal.write.values || !formVal.write.values.inBody)) {
-        input = '';
-        inBody = 'no body';
-        if (!formVal.write.values.inTitle) {
-          inTitle = 'no title';
-        }
-      }
-    }
+    console.log(editValues);
     if (postResult) {
       console.log(postResult);
       if (postResult.status === 200) {
@@ -784,15 +800,17 @@ var WriteContents = function () {
         'write'
       ),
       _react2.default.createElement(FormRoot, {
-        values: { input: input, inTitle: inTitle, inBody: inBody },
+        editValues: editValues,
+        handleEdit: handleEdit,
         handleRePResult: handleRePResult,
         handlePostEntry: handlePostEntry })
     );
   };
   return (0, _reactRedux.connect)(function (state, props) {
+    console.log(state);
     return {
-      formVal: state.form,
-      postResult: state.reducer.postResult
+      postResult: state.reducer.postResult,
+      editValues: state.reducer.editForm
     };
   }, function (dispatch) {
     return {
@@ -801,6 +819,10 @@ var WriteContents = function () {
       },
       handleRePResult: function handleRePResult() {
         dispatch((0, _actions.rePostResult)(null));
+      },
+      handleEdit: function handleEdit(values) {
+        console.log(values);
+        dispatch((0, _actions.editForm)(values));
       }
     };
   })(Container);
@@ -808,7 +830,7 @@ var WriteContents = function () {
 
 exports.default = WriteContents;
 
-},{"../actions":1,"react":727,"react-markdown":671,"react-redux":681,"react-router-redux":689,"redux-form":766}],8:[function(require,module,exports){
+},{"../actions":1,"react":727,"react-markdown":671,"react-redux":681,"react-router-redux":689}],8:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {

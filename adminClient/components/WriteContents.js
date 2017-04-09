@@ -1,68 +1,70 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import {} from 'react-router-redux';
-import { Field, reduxForm } from 'redux-form';
 import ReactMarkdown from 'react-markdown';
-import { postEntry, rePostResult } from '../actions';
+import { postEntry, rePostResult, editForm } from '../actions';
 
 const WriteContents = (() => {
-  const WriteForm = reduxForm({form: 'write'})(({}) => {
-    return (
-      <div>
-        <label>input title</label>
-        <br />
-        <Field name='inTitle' component='input' type='text' style={{width: '100%'}} />
-        <br />
-        <label>input body</label>
-        <br />
-        <Field name='inBody' component='textarea' type='text' style={{width: '100%', height: '130px'}} />
-      </div>
-    );
-  });
-  class FormRoot extends React.Component {
+  class WriteForm extends React.Component {
     constructor(props) {
       super(props);
-    }
-    componentWillMount() {
-      this.props.handleRePResult();
     }
     render() {
       return (
         <div>
-          <WriteForm />
+          <label>input title</label><br />
+          <input type='text' value={this.props.inTitle} style={{width: '100%'}} onChange={(e) => {
+            this.props.handleEdit({title: e.target.value, body: this.props.inBody});
+          }} />
+          <br />
+          <label>input body</label><br />
+          <textarea value={this.props.inBody} style={{width: '100%'}} rows='5' onChange={(e) => {
+            this.props.handleEdit({title: this.props.inTitle, body: e.target.value});
+          }} ></textarea>
+        </div>
+      );
+    }
+  }
+  class FormRoot extends React.Component {
+    constructor(props) {
+      super(props);
+      this.state = {
+        inTitle: 'no title',
+        inBody: 'no body'
+      };
+    }
+    componentWillMount() {
+      this.props.handleRePResult();
+      this.setState({inTitle: this.props.editValues.title});
+      this.setState({inBody: this.props.editValues.body});
+    }
+    componentWillReceiveProps(nextProps) {
+      console.log(this.props, nextProps);
+      this.setState({inTitle: nextProps.editValues.title});
+      this.setState({inBody: nextProps.editValues.body});
+      console.log(this.state);
+    }
+    render() {
+      return (
+        <div>
+          <WriteForm handleEdit={this.props.handleEdit}
+            inTitle={this.state.inTitle} inBody={this.state.inBody} />
           <label>preview</label><br />
           <div style={{'border':'solid 1px #888'}}>
-            <ReactMarkdown source={this.props.values.input} />
+            <ReactMarkdown source={this.state.inBody} />
           </div>
           <hr />
           <button onClick={(e) => {
             e.preventDefault();
             this.props.handlePostEntry(
-              this.props.values.inTitle, this.props.values.inBody);
+              this.state.inTitle, this.state.inBody);
           }}>submit</button>
         </div>
       );
     }
   }
-  const Container = ({formVal, postResult, handlePostEntry, handleRePResult}) => {
-    let input = '';
-    let inTitle = 'no title';
-    let inBody = 'no body';
-    if (formVal.write) {
-      if (formVal.write.values && formVal.write.values.inBody) {
-        inBody = input = formVal.write.values.inBody;
-      }
-      if (formVal.write.values && formVal.write.values.inTitle) {
-        inTitle = formVal.write.values.inTitle;
-      }
-      if (input && (!formVal.write.values || !formVal.write.values.inBody)) {
-        input = '';
-        inBody = 'no body';
-        if (!formVal.write.values.inTitle) {
-          inTitle = 'no title';
-        }
-      }
-    }
+  const Container = ({editValues, postResult, handlePostEntry, handleRePResult, handleEdit}) => {
+    console.log(editValues);
     if (postResult) {
       console.log(postResult);
       if (postResult.status === 200) {
@@ -75,16 +77,18 @@ const WriteContents = (() => {
       <div>
         <h3>write</h3>
         <FormRoot 
-          values={{input, inTitle, inBody}}
+          editValues={editValues}
+          handleEdit={handleEdit}
           handleRePResult={handleRePResult}
           handlePostEntry={handlePostEntry} />       
       </div>
     );
   };
   return connect((state, props) => {
+    console.log(state);
     return {
-      formVal: state.form,
-      postResult: state.reducer.postResult
+      postResult: state.reducer.postResult,
+      editValues: state.reducer.editForm
     };
   }, (dispatch) => {
     return {
@@ -93,7 +97,11 @@ const WriteContents = (() => {
       },
       handleRePResult: () => {
         dispatch(rePostResult(null));
-      }
+      },
+      handleEdit: (values) => {
+        console.log(values);
+        dispatch(editForm(values));
+      },
     };
   })(Container);
 })();
