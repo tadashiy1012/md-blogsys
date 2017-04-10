@@ -7,7 +7,6 @@ import createHistory from 'history/createHashHistory';
 import { Route } from 'react-router';
 import { ConnectedRouter, routerReducer, routerMiddleware, push } from 'react-router-redux';
 import promiseMiddleware from 'redux-promise';
-import { reducer as formReducer } from 'redux-form'
 import reducer from './reducers';
 import { Link, ContentsSplitter } from './components';
 
@@ -17,8 +16,7 @@ const middlewares = [routerMiddleware(history), promiseMiddleware];
 const store = createStore(
   combineReducers({
     reducer,
-    router: routerReducer,
-    form: formReducer
+    router: routerReducer
   }),
   applyMiddleware(...middlewares)
 );
