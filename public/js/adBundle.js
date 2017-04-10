@@ -675,10 +675,8 @@ var WriteContents = function () {
 
       _this.successMessage = 'post success!';
       _this.failMessage = 'post failed!';
-      _this.style = {
-        textAlign: 'center',
-        width: '100%',
-        padding: '8px 0px'
+      _this.baseStyle = {
+        display: 'block', textAlign: 'center', width: '100%', padding: '8px 0px'
       };
       _this.successStyle = {
         border: 'solid 2px green'
@@ -686,20 +684,36 @@ var WriteContents = function () {
       _this.failStyle = {
         border: 'solid 2px red'
       };
+      _this.hideStyle = {
+        display: 'none'
+      };
       _this.state = {
-        toggle: props.toggle
+        show: false,
+        status: false
       };
       return _this;
     }
 
     _createClass(ResultMessage, [{
+      key: 'componentWillReceiveProps',
+      value: function componentWillReceiveProps(nextProps) {
+        if (nextProps.postResult && nextProps.postResult.status === 200) {
+          this.setState({ show: true, status: true });
+        } else if (nextProps.postResult && nextProps.postResult.status !== 200) {
+          this.setState({ show: true, status: false });
+        } else {
+          this.setState({ show: false, status: false });
+        }
+      }
+    }, {
       key: 'render',
       value: function render() {
-        var style = Object.assign({}, this.style, this.state.toggle ? this.successStyle : this.failStyle);
+        var message = this.state.status ? this.successMessage : this.failMessage;
+        var style = Object.assign({}, this.baseStyle, this.state.status ? this.successStyle : this.failStyle);
         return _react2.default.createElement(
           'div',
-          { style: style },
-          this.state.toggle ? this.successMessage : this.failMessage
+          { style: this.state.show ? style : this.hideStyle },
+          message
         );
       }
     }]);
@@ -766,11 +780,6 @@ var WriteContents = function () {
     }
 
     _createClass(FormRoot, [{
-      key: 'componentWillMount',
-      value: function componentWillMount() {
-        this.props.handleRePResult();
-      }
-    }, {
       key: 'componentWillReceiveProps',
       value: function componentWillReceiveProps(nextProps) {
         this.setState({ inTitle: nextProps.editValues.title });
@@ -817,18 +826,8 @@ var WriteContents = function () {
     var editValues = _ref.editValues,
         postResult = _ref.postResult,
         handlePostEntry = _ref.handlePostEntry,
-        handleRePResult = _ref.handleRePResult,
         handleEdit = _ref.handleEdit;
 
-    var msg = null;
-    var flag = false;
-    if (postResult && postResult.status === 200) {
-      msg = _react2.default.createElement(ResultMessage, { toggle: true });
-    } else if (postResult && postResult.status !== 200) {
-      msg = _react2.default.createElement(ResultMessage, { toggle: false });
-    } else {
-      msg = null;
-    }
     return _react2.default.createElement(
       'div',
       null,
@@ -837,17 +836,14 @@ var WriteContents = function () {
         null,
         'write'
       ),
-      msg,
+      _react2.default.createElement(ResultMessage, { postResult: postResult }),
       _react2.default.createElement(FormRoot, {
         editValues: editValues,
-        postResult: postResult,
         handleEdit: handleEdit,
-        handleRePResult: handleRePResult,
         handlePostEntry: handlePostEntry })
     );
   };
   return (0, _reactRedux.connect)(function (state, props) {
-    console.log(state);
     return {
       postResult: state.reducer.postResult,
       editValues: state.reducer.editForm
@@ -855,14 +851,11 @@ var WriteContents = function () {
   }, function (dispatch) {
     return {
       handlePostEntry: function handlePostEntry(title, body) {
-        console.log(title, body);
         dispatch((0, _actions.postEntry)(title, body));
-      },
-      handleRePResult: function handleRePResult() {
-        dispatch((0, _actions.rePostResult)(null));
       },
       handleEdit: function handleEdit(values) {
         dispatch((0, _actions.editForm)(values));
+        dispatch((0, _actions.rePostResult)(null));
       }
     };
   })(Container);

@@ -10,10 +10,8 @@ const WriteContents = (() => {
       super(props);
       this.successMessage = 'post success!';
       this.failMessage = 'post failed!';
-      this.style = {
-        textAlign: 'center',
-        width: '100%',
-        padding: '8px 0px'
+      this.baseStyle = {
+        display: 'block', textAlign: 'center', width: '100%', padding: '8px 0px'
       };
       this.successStyle = {
         border: 'solid 2px green'
@@ -21,15 +19,30 @@ const WriteContents = (() => {
       this.failStyle = {
         border: 'solid 2px red'
       };
+      this.hideStyle = {
+        display: 'none'
+      };
       this.state = {
-        toggle: props.toggle
+        show: false,
+        status: false
       };
     }
+    componentWillReceiveProps(nextProps) {
+      if (nextProps.postResult && nextProps.postResult.status === 200) {
+        this.setState({show: true, status: true});
+      } else if (nextProps.postResult && nextProps.postResult.status !== 200) {
+        this.setState({show: true, status: false});
+      } else {
+        this.setState({show: false, status: false});
+      }
+    }
     render() {
-      const style = Object.assign({}, this.style, this.state.toggle ? this.successStyle : this.failStyle);
+      const message = this.state.status ? this.successMessage : this.failMessage;
+      const style = Object.assign({}, this.baseStyle,
+        this.state.status ? this.successStyle : this.failStyle);
       return (
-        <div style={style}>
-          {this.state.toggle ? this.successMessage : this.failMessage}
+        <div style={this.state.show ? style : this.hideStyle}>
+          {message}
         </div>
       );
     }
@@ -62,9 +75,6 @@ const WriteContents = (() => {
         inBody: props.editValues.body
       };
     }
-    componentWillMount() {
-      this.props.handleRePResult();
-    }
     componentWillReceiveProps(nextProps) {
       this.setState({inTitle: nextProps.editValues.title});
       this.setState({inBody: nextProps.editValues.body});
@@ -88,31 +98,19 @@ const WriteContents = (() => {
       );
     }
   }
-  const Container = ({editValues, postResult, handlePostEntry, handleRePResult, handleEdit}) => {
-    let msg = null;
-    let flag = false;
-    if (postResult && postResult.status === 200) {
-      msg = (<ResultMessage toggle={true} />);
-    } else if (postResult && postResult.status !== 200) {
-      msg = (<ResultMessage toggle={false} />);
-    } else {
-      msg = null;
-    }
+  const Container = ({editValues, postResult, handlePostEntry, handleEdit}) => {
     return (
       <div>
         <h3>write</h3>
-        {msg}
+        <ResultMessage postResult={postResult} />
         <FormRoot 
           editValues={editValues}
-          postResult={postResult}
           handleEdit={handleEdit}
-          handleRePResult={handleRePResult}
           handlePostEntry={handlePostEntry} />       
       </div>
     );
   };
   return connect((state, props) => {
-    console.log(state);
     return {
       postResult: state.reducer.postResult,
       editValues: state.reducer.editForm
@@ -120,14 +118,11 @@ const WriteContents = (() => {
   }, (dispatch) => {
     return {
       handlePostEntry: (title, body) => {
-        console.log(title, body);
         dispatch(postEntry(title, body));
-      },
-      handleRePResult: () => {
-        dispatch(rePostResult(null));
       },
       handleEdit: (values) => {
         dispatch(editForm(values));
+        dispatch(rePostResult(null));
       },
     };
   })(Container);
