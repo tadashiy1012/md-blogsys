@@ -78,7 +78,7 @@ route.put('/entry/:id', async (ctx, next) => {
       const title = ctx.request.body.title || 'no title';
       const body = ctx.request.body.body || 'no body';
       const result = await entryService.update(id, title, body);
-      ctx.body = JSON.stringify(result);
+      ctx.body = JSON.stringify({status: 200, result: result});
     } else {
       ctx.status = 401;
       ctx.body = JSON.stringify({status: 401, message: 'login required'});
@@ -95,7 +95,7 @@ route.del('/entry/:id', async (ctx, next) => {
     if (loginService.getLogged(name)) {
       const id = ctx.params.id;
       const result = await entryService.del(id);
-      ctx.body = JSON.stringify(result);
+      ctx.body = JSON.stringify({status: 200, result: result});
     } else {
       ctx.status = 401;
       ctx.body = JSON.stringify({status: 401, message: 'login required'});
