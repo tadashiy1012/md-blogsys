@@ -86,6 +86,7 @@ export const updateEntry = createAction('UPDATE_ENTRY', async (id, title, body) 
   const result = await execPut(id, title, body);
   return result;
 });
+export const reUpdateResult = createAction('RE_UPDATE_RESULT');
 export const delEntry = createAction('DEL_ENTRY', async (id) => {
   const result = await execDelete(id);
   return result;
