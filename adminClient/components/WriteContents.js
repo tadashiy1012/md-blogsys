@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {} from 'react-router-redux';
 import ReactMarkdown from 'react-markdown';
@@ -47,6 +48,9 @@ const WriteContents = (() => {
       );
     }
   }
+  ResultMessage.propTypes = {
+    postResult: PropTypes.any
+  };
   class WriteForm extends React.Component {
     constructor(props) {
       super(props);
