@@ -9,10 +9,11 @@ const Entries = (() => {
       super(props);
     }
     componentWillMount() {
-      if (this.props.tgtId) {
-        this.props.handleReadOne(this.props.tgtId);
-      } else {
-        this.props.handleRead();
+      this.props.handleRead();
+    }
+    componentWillReceiveProps(nextProps) {
+      if (nextProps.tgtId) {
+        this.props.handleReadOne(nextProps.tgtId);
       }
     }
     render() {
