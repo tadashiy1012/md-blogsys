@@ -1,56 +1,11 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {} from 'react-router-redux';
 import ReactMarkdown from 'react-markdown';
 import { postEntry, rePostResult, editForm } from '../actions';
+import { ResultMessage } from './';
 
 const WriteContents = (() => {
-  class ResultMessage extends React.Component {
-    constructor(props) {
-      super(props);
-      this.successMessage = 'post success!';
-      this.failMessage = 'post failed!';
-      this.baseStyle = {
-        display: 'block', textAlign: 'center', width: '100%', padding: '8px 0px'
-      };
-      this.successStyle = {
-        border: 'solid 2px green'
-      };
-      this.failStyle = {
-        border: 'solid 2px red'
-      };
-      this.hideStyle = {
-        display: 'none'
-      };
-      this.state = {
-        show: false,
-        status: false
-      };
-    }
-    componentWillReceiveProps(nextProps) {
-      if (nextProps.postResult && nextProps.postResult.status === 200) {
-        this.setState({show: true, status: true});
-      } else if (nextProps.postResult && nextProps.postResult.status !== 200) {
-        this.setState({show: true, status: false});
-      } else {
-        this.setState({show: false, status: false});
-      }
-    }
-    render() {
-      const message = this.state.status ? this.successMessage : this.failMessage;
-      const style = Object.assign({}, this.baseStyle,
-        this.state.status ? this.successStyle : this.failStyle);
-      return (
-        <div style={this.state.show ? style : this.hideStyle}>
-          {message}
-        </div>
-      );
-    }
-  }
-  ResultMessage.propTypes = {
-    postResult: PropTypes.any
-  };
   class WriteForm extends React.Component {
     constructor(props) {
       super(props);
